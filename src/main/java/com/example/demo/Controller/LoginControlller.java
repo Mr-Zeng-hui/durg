@@ -16,4 +16,9 @@ public class LoginControlller {
         return "test";
     }
 
+    @GetMapping("/index")
+    public String index(){
+        return "index";
+    }
+
 }
