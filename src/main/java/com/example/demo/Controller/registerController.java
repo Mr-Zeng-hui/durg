@@ -14,27 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/verify")
-public class VerifyController {
-
-
+@RequestMapping("/register")
+public class registerController {
 
     private static Logger logger = LoggerFactory.getLogger(EmailSendService.class);
     @ResponseBody
-    @RequestMapping("/verifyCode") //验证码校验
-    public JSONObject verifyCode(@RequestBody JSONObject jsonInfo, HttpServletRequest request){
+    @RequestMapping("/registerUser")
+    public JSONObject registerUser(@RequestBody JSONObject jsonInfo, HttpServletRequest request){
         JSONObject jsonObject=new JSONObject();
-        String cachedValue = CacheUtil.get("verifyCode").toString();
-        String code = jsonInfo.getString("code");
-        logger.info("code:"+code+"cachedValue:"+cachedValue);
-        if (StringUtils.equals(code, cachedValue)){
-            jsonObject.put("code", 200);
-            jsonObject.put("msg", "验证码正确");
-        }else {
-            jsonObject.put("code", 400);
-            jsonObject.put("msg", "验证码错误");
-        }
+
+
+
         return jsonObject;
     }
-
 }
