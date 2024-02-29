@@ -27,7 +27,7 @@
           <a class="" href="javascript:;">药品管理</a>
           <dl class="layui-nav-child">
             <dd>
-              <a href="javascript:;" data-url="/durglist">药品查询</a>
+              <a href="javascript:;" data-url="/drugInfo/durglist">药品查询</a>
             </dd>
             <dd>
               <a href="javascript:;" data-url="/login">药品管理</a>
@@ -44,7 +44,7 @@
               <a href="javascript:;" data-url="server/server-config.jsp">系统参数</a>
             </dd>
             <dd>
-              <a href="javascript:;" data-url="server/cache-adv-conf.jsp">用户管理</a>
+              <a href="javascript:;" data-url="">用户管理</a>
             </dd>
           </dl>
         </li>
@@ -79,14 +79,14 @@
         }else{
           url=url+"?t="+d.getTime();
         }
-        window.location.hash=url;
+        //window.location.hash=url;
       });
       var url=window.location.hash;
       if(url){
         url=url.substr(1);
         loadPage(url);
       }else{
-        //loadPage("/easitline-console/pages/server/summary.jsp");
+
       }
 
       window.addEventListener('hashchange',function(e) {

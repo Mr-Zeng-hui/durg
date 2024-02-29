@@ -18,7 +18,7 @@
             <div class="layui-row">
 
                 <div class="layui-form-item" >
-                    <div style="width: 50%;float: left;">
+                    <!--<div style="width: 50%;float: left;">
                         <label class="layui-form-label">主治症状</label>
                         <div class="layui-input-block" >
                             <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
@@ -26,9 +26,9 @@
 
                         </div>
                     </div>
-                    <button type="button" class="layui-btn " style="margin-left: 10px;" onclick="list.query()"> 搜索</button>
+                    <button type="button" class="layui-btn " style="margin-left: 10px;" onclick="list.query()"> 搜索</button>-->
+                    <button type="button" class="layui-btn layui-bg-red" style="float: right;" onclick="delUser('')"> 删除</button>
                     <button type="button" class="layui-btn layui-bg-green" style="float: right;" onclick="addUser()"> 新增</button>
-                    <button type="button" class="layui-btn layui-bg-red" style="float: right;" onclick="addUser()"> 新增</button>
                 </div>
 
 
@@ -50,11 +50,10 @@
             elem: '#list',
             cols: [
                 [ //标题栏
-                {field: 'id', title: 'ID', width: 80, sort: true},
-                {field: 'username', title: '药品名称', width: 120},
-                {field: 'sex', title: '药品别名', width: 80},
-                {field: 'sign', title: '主治症状', minWidth: 160},
-                {field: 'city', title: '淘宝大药房', width: 100},
+                {field: 'id', title: '登录账号'},
+                {field: 'username', title: '用户名'},
+                {field: 'sex', title: '是否启用'},
+                {field: 'sign', title: '密保问题', minWidth: 160},
                 {field: 'experience', title: '百度健康', width: 80, sort: true}
             ]
             ],
