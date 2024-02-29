@@ -4,8 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Demo</title>
-    <link href="layui/css/layui.css" rel="stylesheet">
-    <script src="layui/layui.js"></script>
+    <link href="https://www.layuicdn.com/layui/css/layui.css" rel="stylesheet">
+    <script src="https://www.layuicdn.com/layui/layui.js"></script>
+
 </head>
 <body>
 <form  autocomplete="off" onsubmit="return false;" class="form-inline" id="batchMgrForm">
@@ -26,7 +27,7 @@
 
                         </div>
                     </div>
-                    <button type="button" class="layui-btn " style="margin-left: 10px;" onclick="list.query()"> 搜索</button>
+                    <button type="button" class="layui-btn " style="margin-left: 10px;" onclick="query()"> 搜索</button>
                 </div>
 
 
@@ -48,81 +49,106 @@
             elem: '#list',
             cols: [
                 [ //标题栏
-                {field: 'id', title: 'ID', width: 80, sort: true},
-                {field: 'username', title: '药品名称', width: 120},
-                {field: 'sex', title: '药品别名', width: 80},
-                {field: 'sign', title: '主治症状', minWidth: 160},
-                {field: 'city', title: '淘宝大药房', width: 100},
-                {field: 'experience', title: '百度健康', width: 80, sort: true}
-            ]
+                    {field: 'id', title: 'ID', width: 80},
+                    {field: 'name', title: '药品名称', width: 120},
+                    {field: 'bak', title: '主治症状', minWidth: 160},
+                    {field: 'img1', title: '百度健康药品图片', minWidth: 160},
+                    {field: 'price1', title: '百度健康价格', width: 80},
+                    {field: 'img2', title: '阿里大药房药品图片', minWidth: 160},
+                    {field: 'price2', title: '阿里大药房价格', width: 80},
+                    {field: 'instructions', title: '说明书', minWidth: 160},
+                    {field:'OPER', title: '操作',fixed:'right',align:'center',minWidth: 200, templet : function(row){
+                            var temp="";
+                            temp+= ' <span href="javascript:void(0)" class="layui-btn layui-btn-xs layui-btn-warn" onclick="runPython(\''+row.id+'\')">爬取最新</span> ';
+                            return temp;
+                        }}
+                ]
             ],
-            data: [
-                { // 赋值已知数据
-                "id": "10001",
-                "username": "布洛芬缓释胶囊",
-                "sex": "布洛芬",
-                "city": "19.9",
-                "sign": "布洛芬（Ibuprofen）为解热镇痛类，非甾体抗炎药。本品通过抑制环氧化酶，减少前列腺素的合成，产生镇痛、抗炎作用；通过下丘脑体温调节中枢而起解热作用。",
-                "experience": "218"
-            }, {
-                "id": "10002",
-                "username": "布洛芬缓释胶囊",
-                "sex": "布洛芬",
-                "city": "19.9",
-                "sign": "布洛芬（Ibuprofen）为解热镇痛类，非甾体抗炎药。本品通过抑制环氧化酶，减少前列腺素的合成，产生镇痛、抗炎作用；通过下丘脑体温调节中枢而起解热作用。",
-                "experience": "218"
-            }, {
-                "id": "10003",
-                "username": "布洛芬缓释胶囊",
-                "sex": "布洛芬",
-                "city": "19.9",
-                "sign": "布洛芬（Ibuprofen）为解热镇痛类，非甾体抗炎药。本品通过抑制环氧化酶，减少前列腺素的合成，产生镇痛、抗炎作用；通过下丘脑体温调节中枢而起解热作用。",
-                "experience": "218"
-            }, {
-                "id": "10004",
-                "username": "布洛芬缓释胶囊",
-                "sex": "布洛芬",
-                "city": "19.9",
-                "sign": "布洛芬（Ibuprofen）为解热镇痛类，非甾体抗炎药。本品通过抑制环氧化酶，减少前列腺素的合成，产生镇痛、抗炎作用；通过下丘脑体温调节中枢而起解热作用。",
-                "experience": "218"
-            }, {
-                "id": "10005",
-                "username": "布洛芬缓释胶囊",
-                "sex": "布洛芬",
-                "city": "19.9",
-                "sign": "布洛芬（Ibuprofen）为解热镇痛类，非甾体抗炎药。本品通过抑制环氧化酶，减少前列腺素的合成，产生镇痛、抗炎作用；通过下丘脑体温调节中枢而起解热作用。",
-                "experience": "218"
-            }, {
-                "id": "10006",
-                "username": "布洛芬缓释胶囊",
-                "sex": "布洛芬",
-                "city": "19.9",
-                "sign": "布洛芬（Ibuprofen）为解热镇痛类，非甾体抗炎药。本品通过抑制环氧化酶，减少前列腺素的合成，产生镇痛、抗炎作用；通过下丘脑体温调节中枢而起解热作用。",
-                "experience": "218"
-            }, {
-                "id": "10007",
-                "username": "布洛芬缓释胶囊",
-                "sex": "布洛芬",
-                "city": "19.9",
-                "sign": "布洛芬（Ibuprofen）为解热镇痛类，非甾体抗炎药。本品通过抑制环氧化酶，减少前列腺素的合成，产生镇痛、抗炎作用；通过下丘脑体温调节中枢而起解热作用。",
-                "experience": "218"
-            }, {
-                "id": "10008",
-                "username": "布洛芬缓释胶囊",
-                "sex": "布洛芬",
-                "city": "19.9",
-                "sign": "布洛芬（Ibuprofen）为解热镇痛类，非甾体抗炎药。本品通过抑制环氧化酶，减少前列腺素的合成，产生镇痛、抗炎作用；通过下丘脑体温调节中枢而起解热作用。",
-                "experience": "218"
-            }
-            ],
+            url: '/drug/drugInfo/data',  // 后端接口地址
+            // data: [
+            //     { // 赋值已知数据
+            //     "id": "10001",
+            //     "username": "布洛芬缓释胶囊",
+            //     "sex": "布洛芬",
+            //     "city": "19.9",
+            //     "sign": "布洛芬（Ibuprofen）为解热镇痛类，非甾体抗炎药。本品通过抑制环氧化酶，减少前列腺素的合成，产生镇痛、抗炎作用；通过下丘脑体温调节中枢而起解热作用。",
+            //     "experience": "218"
+            // }, {
+            //     "id": "10002",
+            //     "username": "布洛芬缓释胶囊",
+            //     "sex": "布洛芬",
+            //     "city": "19.9",
+            //     "sign": "布洛芬（Ibuprofen）为解热镇痛类，非甾体抗炎药。本品通过抑制环氧化酶，减少前列腺素的合成，产生镇痛、抗炎作用；通过下丘脑体温调节中枢而起解热作用。",
+            //     "experience": "218"
+            // }, {
+            //     "id": "10003",
+            //     "username": "布洛芬缓释胶囊",
+            //     "sex": "布洛芬",
+            //     "city": "19.9",
+            //     "sign": "布洛芬（Ibuprofen）为解热镇痛类，非甾体抗炎药。本品通过抑制环氧化酶，减少前列腺素的合成，产生镇痛、抗炎作用；通过下丘脑体温调节中枢而起解热作用。",
+            //     "experience": "218"
+            // }, {
+            //     "id": "10004",
+            //     "username": "布洛芬缓释胶囊",
+            //     "sex": "布洛芬",
+            //     "city": "19.9",
+            //     "sign": "布洛芬（Ibuprofen）为解热镇痛类，非甾体抗炎药。本品通过抑制环氧化酶，减少前列腺素的合成，产生镇痛、抗炎作用；通过下丘脑体温调节中枢而起解热作用。",
+            //     "experience": "218"
+            // }, {
+            //     "id": "10005",
+            //     "username": "布洛芬缓释胶囊",
+            //     "sex": "布洛芬",
+            //     "city": "19.9",
+            //     "sign": "布洛芬（Ibuprofen）为解热镇痛类，非甾体抗炎药。本品通过抑制环氧化酶，减少前列腺素的合成，产生镇痛、抗炎作用；通过下丘脑体温调节中枢而起解热作用。",
+            //     "experience": "218"
+            // }, {
+            //     "id": "10006",
+            //     "username": "布洛芬缓释胶囊",
+            //     "sex": "布洛芬",
+            //     "city": "19.9",
+            //     "sign": "布洛芬（Ibuprofen）为解热镇痛类，非甾体抗炎药。本品通过抑制环氧化酶，减少前列腺素的合成，产生镇痛、抗炎作用；通过下丘脑体温调节中枢而起解热作用。",
+            //     "experience": "218"
+            // }, {
+            //     "id": "10007",
+            //     "username": "布洛芬缓释胶囊",
+            //     "sex": "布洛芬",
+            //     "city": "19.9",
+            //     "sign": "布洛芬（Ibuprofen）为解热镇痛类，非甾体抗炎药。本品通过抑制环氧化酶，减少前列腺素的合成，产生镇痛、抗炎作用；通过下丘脑体温调节中枢而起解热作用。",
+            //     "experience": "218"
+            // }, {
+            //     "id": "10008",
+            //     "username": "布洛芬缓释胶囊",
+            //     "sex": "布洛芬",
+            //     "city": "19.9",
+            //     "sign": "布洛芬（Ibuprofen）为解热镇痛类，非甾体抗炎药。本品通过抑制环氧化酶，减少前列腺素的合成，产生镇痛、抗炎作用；通过下丘脑体温调节中枢而起解热作用。",
+            //     "experience": "218"
+            // }
+            // ],
             //skin: 'line', // 表格风格
             //even: true,
             page: true, // 是否显示分页
-            limits: [5, 10, 15],
-            height:700,
-            limit: 5 // 每页默认显示的数量
+            limits: [10, 30, 50, 100],
+            height:700
         });
+
+        // 模拟一个接口调用成功后刷新表格的操作
+        function refreshTable() {
+            // 在实际场景中，你需要调用你的接口，然后在接口回调中执行下面的代码
+            // 调用 table.reload 方法刷新表格
+            table.reload('list'); // test 为表格 lay-filter 的值，需要与 table.render 中的 lay-filter 一致
+        }
+
+        function query() {
+            refreshTable();
+        }
+
+        function runPython(){
+
+        }
+
     });
+
+
 </script>
 
 </body>

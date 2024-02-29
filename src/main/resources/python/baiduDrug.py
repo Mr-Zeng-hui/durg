@@ -71,7 +71,7 @@ def get_drug_info(keyword):
 
 # 阿里大药房
 def get_drug_info2(keyword):
-    keyword = '布洛芬缓释胶囊'
+    # keyword = '布洛芬缓释胶囊'
     keyword = quote(keyword, encoding='gbk')  # 使用 gbk 编码
     url = 'https://maiyao.liangxinyao.com/i/asynSearch.htm?_ksTS=1709092049134_116&callback=jsonp117&mid=w-14644508915-0&wid=14644508915&path=/search.htm&q={}&type=p&search=y&newHeader_b=s_from&searcy_type=item&from=liangxinyao.shop.pc_1_placeholder&spm=a1z10.3-b-s.a2227oh.d101'
     headers = {
@@ -118,6 +118,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     keyword = sys.argv[1]
-    #get_drug_info(keyword)
+    get_drug_info(keyword)
     get_drug_info2(keyword)
 

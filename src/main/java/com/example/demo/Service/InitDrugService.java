@@ -26,7 +26,7 @@ public class InitDrugService {
             JsonNode jsonNode = objectMapper.readTree(file);
             System.out.println(jsonNode);
             Class.forName("org.sqlite.JDBC");
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:D://work//myDb");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:C://Users//hammer//IdeaProjects//durg//src//main//resources//db//myDb");
             insertData(connection, jsonNode);
             connection.close();
             System.out.println("Data inserted into SQLite successfully!");
