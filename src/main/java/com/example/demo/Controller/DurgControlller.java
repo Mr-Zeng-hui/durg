@@ -21,15 +21,17 @@ public class DurgControlller {
 
     @GetMapping("/data")
     @ResponseBody
-    public Map<String, Object> getDrugsByPage(@RequestParam("page") int page, @RequestParam("limit") int limit) {
-        return iDrugSerivce.queryForPage(page, limit);
+    public Map<String, Object> getDrugsByPage(@RequestParam("page") int page, @RequestParam("limit") int limit , @RequestParam(value= "bak", required = false) String bak) {
+        System.out.println("bak:"+bak);
+        return iDrugSerivce.queryForPage(page, limit, bak);
     }
 
     @GetMapping("/crawlingData")
     @ResponseBody
-    public Map<String, Object> crawlingData(@RequestParam("id") int id) {
-        return null;
+    public Boolean crawlingData(@RequestParam("id") String id, @RequestParam("keyword") String keyword) {
+        return  iDrugSerivce.crawlingData(id, keyword);
     }
+
 
 
 }

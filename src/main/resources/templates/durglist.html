@@ -6,7 +6,15 @@
     <title>Demo</title>
     <link href="https://www.layuicdn.com/layui/css/layui.css" rel="stylesheet">
     <script src="https://www.layuicdn.com/layui/layui.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
+    <style>
+        .layui-table-img {
+            width: 50px;  /* 设置图片宽度 */
+            height: 50px; /* 设置图片高度 */
+        }
+
+    </style>
 </head>
 <body>
 <form  autocomplete="off" onsubmit="return false;" class="form-inline" id="batchMgrForm">
@@ -22,8 +30,7 @@
                     <div style="width: 50%;float: left;">
                         <label class="layui-form-label">主治症状</label>
                         <div class="layui-input-block" >
-                            <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-
+                            <input type="text" name="bak" id="bak"  placeholder="请输入" autocomplete="off" class="layui-input">
 
                         </div>
                     </div>
@@ -49,17 +56,30 @@
             elem: '#list',
             cols: [
                 [ //标题栏
-                    {field: 'id', title: 'ID', width: 80},
-                    {field: 'name', title: '药品名称', width: 120},
-                    {field: 'bak', title: '主治症状', minWidth: 160},
-                    {field: 'img1', title: '百度健康药品图片', minWidth: 160},
-                    {field: 'price1', title: '百度健康价格', width: 80},
-                    {field: 'img2', title: '阿里大药房药品图片', minWidth: 160},
-                    {field: 'price2', title: '阿里大药房价格', width: 80},
-                    {field: 'instructions', title: '说明书', minWidth: 160},
-                    {field:'OPER', title: '操作',fixed:'right',align:'center',minWidth: 200, templet : function(row){
+                    {field: 'id', title: 'ID', width: 150},
+                    {field: 'name', title: '药品名称', width: 150},
+                    // {field: 'bigname', title: '详细名称', width: 100},
+                    {field: 'bak', title: '主治症状', width: 180},
+                    {field:'img1', title:'百度健康药品图片', width:200, templet: function(d){
+                            if(d.img1){
+                                return '<img src="'+ d.img1 +'" class="layui-table-img"/>';
+                            }else{
+                                return ''
+                            }
+                        }},
+                    {field: 'price1', title: '百度健康价格', width: 150},
+                    {field:'img2', title:'阿里大药房药品图片', width:200, templet: function(d){
+                            if(d.img2){
+                                return '<img src="'+ d.img2 +'" class="layui-table-img"/>';
+                            }else{
+                                return ''
+                            }
+                        }},
+                    {field: 'price2', title: '阿里大药房价格', width: 150},
+                    {field: 'instructions', title: '说明书'},
+                    {field:'OPER', title: '操作',fixed:'right',align:'center',width: 80, templet : function(row){
                             var temp="";
-                            temp+= ' <span href="javascript:void(0)" class="layui-btn layui-btn-xs layui-btn-warn" onclick="runPython(\''+row.id+'\')">爬取最新</span> ';
+                            temp+= ' <span href="javascript:void(0)" class="layui-btn layui-btn-xs layui-btn-warn" onclick="runPython(\''+row.id+'\', \''+row.name+'\')">爬取最新</span> ';
                             return temp;
                         }}
                 ]
@@ -127,27 +147,38 @@
             //skin: 'line', // 表格风格
             //even: true,
             page: true, // 是否显示分页
-            limits: [10, 30, 50, 100],
-            height:700
+            limits: [50, 100],
+            height: 'full-160'
         });
 
-        // 模拟一个接口调用成功后刷新表格的操作
-        function refreshTable() {
-            // 在实际场景中，你需要调用你的接口，然后在接口回调中执行下面的代码
-            // 调用 table.reload 方法刷新表格
-            table.reload('list'); // test 为表格 lay-filter 的值，需要与 table.render 中的 lay-filter 一致
-        }
 
-        function query() {
-            refreshTable();
-        }
 
-        function runPython(){
 
-        }
+
 
     });
+    // 模拟一个接口调用成功后刷新表格的操作
+    function refreshTable() {
+        // 在实际场景中，你需要调用你的接口，然后在接口回调中执行下面的代码
+        // 调用 table.reload 方法刷新表格
+        layui.table.reload('list'); // test 为表格 lay-filter 的值，需要与 table.render 中的 lay-filter 一致
+    }
 
+    function query() {
+        refreshTable();
+    }
+
+    function runPython(id, keyword){
+        $.ajax({
+            url : '/drug/drugInfo/crawlingData?id='+id+'&keyword='+keyword,
+            type : 'get',
+            success : function(result) {
+                refreshTable();
+            },error : function(jqXHR, textStatus, errorThrown) {
+                layer.alert("出现网络故障,请稍后再试!",{icon:7,time:15000});
+            }
+        });
+    }
 
 </script>
 

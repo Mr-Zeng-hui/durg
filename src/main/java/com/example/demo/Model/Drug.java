@@ -16,4 +16,5 @@ public class Drug {
     private String img1;
     private String price2;
     private String img2;
+    private String bigname;
 }

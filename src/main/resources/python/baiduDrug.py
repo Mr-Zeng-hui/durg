@@ -4,9 +4,18 @@ import json
 import re
 from urllib.parse import quote
 from bs4 import BeautifulSoup
+import sqlite3
+import os
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+dbUrl = os.path.join(script_dir, '..', 'db/myDb')
+print(dbUrl)
 # 百度健康
-def get_drug_info(keyword):
+def get_drug_info(keyword, id):
+
+    # 测试
+    keyword = remove_brackets(keyword)
+    print(keyword)
     url = 'https://expert.baidu.com/mall-search/drug/search?page=0&pageSize=1&query={}'
     url2 = 'https://jiankang.baidu.com/tradeflow/b2c/product/detail?skuId={}&storeId={}'
 
@@ -40,11 +49,12 @@ def get_drug_info(keyword):
             # 创建一个空列表用于存储句子
             sentences = []
 
-            # 遍历 JSON 数组
-            for item in drugAbstract:
-                # 将 "name" 和 "description" 合并为一个句子，并添加到列表中
-                sentence = "{}: {}".format(item['name'], item['description'])
-                sentences.append(sentence)
+            if drugAbstract is not None:
+                # 遍历 JSON 数组
+                for item in drugAbstract:
+                    # 将 "name" 和 "description" 合并为一个句子，并添加到列表中
+                    sentence = "{}: {}".format(item['name'], item['description'])
+                    sentences.append(sentence)
 
             # 使用字符串的 join 方法将句子连接起来
             result_sentence = "\n".join(sentences)
@@ -54,7 +64,7 @@ def get_drug_info(keyword):
             # print(indication)
             # print(headerImages)
             # print(result_sentence)
-            
+
              # 创建一个字典用于存储信息
             drug_info = {
                 "commonName": commonName,
@@ -64,13 +74,29 @@ def get_drug_info(keyword):
                 "resultSentence": result_sentence
             }
 
-            # 将字典转换为 JSON 格式并保存到文件
-            with open('drug_info.json', 'w', encoding='utf-8') as json_file:
-                json.dump(drug_info, json_file, ensure_ascii=False, indent=4)
-            
+
+
+            # 连接到 SQLite 数据库
+            conn = sqlite3.connect(dbUrl)
+            conn.isolation_level = None  # 设置为默认值
+
+            # 创建一个游标对象
+            cursor = conn.cursor()
+            # 执行更新操作
+            cursor.execute("UPDATE drug_set SET bigname = ?, bak = ?, instructions = ?, price1 = ?, img1 = ? WHERE id = ?", (commonName, indication, result_sentence, price, headerImages, id))
+            # 提交事务
+            conn.commit()
+            # 关闭连接
+            conn.close()
+            ## 将字典转换为 JSON 格式并保存到文件
+            #with open('drug_info.json', 'w', encoding='utf-8') as json_file:
+              #  json.dump(drug_info, json_file, ensure_ascii=False, indent=4)
+
 
 # 阿里大药房
-def get_drug_info2(keyword):
+def get_drug_info2(keyword, id):
+    keyword = remove_brackets(keyword)
+    print(keyword)
     # keyword = '布洛芬缓释胶囊'
     keyword = quote(keyword, encoding='gbk')  # 使用 gbk 编码
     url = 'https://maiyao.liangxinyao.com/i/asynSearch.htm?_ksTS=1709092049134_116&callback=jsonp117&mid=w-14644508915-0&wid=14644508915&path=/search.htm&q={}&type=p&search=y&newHeader_b=s_from&searcy_type=item&from=liangxinyao.shop.pc_1_placeholder&spm=a1z10.3-b-s.a2227oh.d101'
@@ -88,7 +114,7 @@ def get_drug_info2(keyword):
 
         # 删除转义字符 \"
         html_content = html_content.replace(r'\"', '"')
-        
+
         soup = BeautifulSoup(html_content, 'html.parser')
 
         # 获取所有商品信息
@@ -97,27 +123,42 @@ def get_drug_info2(keyword):
         product_name = item.select_one('.item-name').text.strip()
         product_price = item.select_one('.c-price').text.strip()
         product_image_url = 'https:'+item.select_one('.photo img')['data-ks-lazyload']
-        
-       
+
+
         # 打印商品信息
         print(f"商品名称: {product_name}")
         print(f"商品价格: {product_price}")
         print(f"商品图片URL: {product_image_url}")
 
-
+        # 连接到 SQLite 数据库
+        conn = sqlite3.connect(dbUrl)
+        # 创建一个游标对象
+        cursor = conn.cursor()
+        # 执行更新操作
+        cursor.execute("UPDATE drug_set SET price2 = ?, img2 = ? WHERE id = ?", (product_price, product_image_url, id))
+        # 提交事务
+        conn.commit()
+        # 关闭连接
+        conn.close()
     else:
         print("未找到HTML内容。")
 
+def remove_brackets(text):
+    # 使用正则表达式匹配括号及其内部内容，并替换为空字符串
+    cleaned_text = re.sub(r'\([^)]*\)', '', text)
+    return cleaned_text.strip()  # 去掉首尾空格
 
 
 
 if __name__ == "__main__":
     # 从命令行获取关键字参数
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         print("Usage: python script.py <keyword>")
         sys.exit(1)
 
     keyword = sys.argv[1]
-    get_drug_info(keyword)
-    get_drug_info2(keyword)
+    id = sys.argv[2]
+
+    get_drug_info(keyword, id)
+    get_drug_info2(keyword, id)
 

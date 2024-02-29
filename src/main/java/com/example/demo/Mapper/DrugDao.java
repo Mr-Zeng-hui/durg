@@ -15,8 +15,16 @@ import java.util.List;
 @Component
 public interface DrugDao {
 
-    @Select("SELECT * FROM drug_set LIMIT #{pageSize} OFFSET #{offset}")
-    List<Drug> queryForPage(@Param("pageSize") int pageSize, @Param("offset") int offset);
+    @Select({
+            "<script>",
+            "SELECT * FROM drug_set",
+            "<if test='bak != null'>",
+            "WHERE bak like #{bak}",
+            "</if>",
+            "LIMIT #{pageSize} OFFSET #{offset}",
+            "</script>"
+    })
+    List<Drug> queryForPage(@Param("pageSize") int pageSize, @Param("offset") int offset ,@Param("bak") String bak);
 
     // 查询总记录数
     @Select("SELECT COUNT(*) FROM drug_set")
