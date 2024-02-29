@@ -27,6 +27,8 @@
                         </div>
                     </div>
                     <button type="button" class="layui-btn " style="margin-left: 10px;" onclick="list.query()"> 搜索</button>
+                    <button type="button" class="layui-btn layui-bg-green" style="float: right;" onclick="addUser()"> 新增</button>
+                    <button type="button" class="layui-btn layui-bg-red" style="float: right;" onclick="addUser()"> 新增</button>
                 </div>
 
 
@@ -123,6 +125,33 @@
             limit: 5 // 每页默认显示的数量
         });
     });
+
+    /**
+     * 添加用户
+     */
+    function addUser(){
+        var index = layer.open({
+            type: 2,
+            title: '添加用户',
+            area: ['800px', '600px'],
+            content: '/addUser'
+        });
+    }
+
+    delUser = function (id) {
+        layer.confirm('确定删除该用户？', {
+            btn: ['确定', '取消']
+        }, function () {
+            layer.msg('删除成功', {
+                time: 1000
+            }, function () {
+                layer.close(index);
+            });
+        }, function () {
+            layer.close(index);
+        });
+    }
+
 </script>
 
 </body>
