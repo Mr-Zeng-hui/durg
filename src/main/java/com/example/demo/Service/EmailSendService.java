@@ -6,24 +6,19 @@ import cn.zeng.email.constant.SmtpHostEnum;
 import cn.zeng.email.core.MiniEmail;
 import cn.zeng.email.core.MiniEmailFactoryBuilder;
 import com.alibaba.fastjson.JSONObject;
-import com.example.demo.cache.GuavaCache;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.example.demo.util.CacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
+
 
 @Service
 public class EmailSendService {
     private static Logger logger = LoggerFactory.getLogger(EmailSendService.class);
 
-    @Autowired
-    private  GuavaCache  cache;
+
 
     public JSONObject sendEmail(JSONObject jsonInfo) {
         JSONObject jsonObject = new JSONObject();
@@ -41,7 +36,8 @@ public class EmailSendService {
             List<String> sendSuccessToList = miniEmail
                     .send(to.split(","), "验证码", EmailContentTypeEnum.HTML, content);
             logger.info("send success to = " + sendSuccessToList);
-            cache.putCachedString("verifyCode", content);
+            //存入缓存 时间为5分钟
+            CacheUtil.put("CODE_"+to, content, 5);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             jsonObject.put("code", 400);

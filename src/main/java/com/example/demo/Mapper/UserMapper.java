@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Mapper
 @Component
-public interface UserDao {
+public interface UserMapper {
     /**
      * 验证登录
      * @param username
@@ -18,6 +18,6 @@ public interface UserDao {
      */
 //    User queryByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
 
-    @Select("SELECT * FROM user_info WHERE USER_NAME=#{username} AND PASSWORD=#{password}")
+    @Select("SELECT id ,USER_NAME AS userName ,PASSWORD AS password, EMAIL AS email,TYPE AS type ,STATE AS state,SECURITY_ISSUES AS securityIssues,ERROR_COUNT as errorCount ,ANSWER as answer FROM user_info WHERE USER_NAME=#{username} AND PASSWORD=#{password}")
     User queryByUsernameAndPassword( String username,  String password);
 }
