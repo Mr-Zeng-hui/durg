@@ -59,7 +59,7 @@
             title: '添加药品', // 弹窗标题
             offset: '120px',
             area: ['800px', '200px'], // 弹窗宽高
-            content: '/drug/drugInfo/durgAdd', // 弹窗内容，这里填写添加页面的URL
+            content: '/durgAdd', // 弹窗内容，这里填写添加页面的URL
             maxmin: true
         });
     }
@@ -105,7 +105,7 @@
                         }}
                 ]
             ],
-            url: '/drug/drugInfo/data',  // 后端接口地址
+            url: '/durgData',  // 后端接口地址
             // url: '/drug/drugInfo/data',
             // data: { bak: $("#bak").val() },
             // data: [
@@ -176,27 +176,27 @@
         });
 
 // 监听表格行点击事件
-        table.on('row(list)', function(obj) {
-            // obj.data 为当前行的数据对象
-            var rowData = obj.data;
-
-            // 获取需要显示的文本，这里假设你想显示 `instructions` 字段的内容
-            var textToShow = rowData.instructions;
-            if(textToShow == null){
-                textToShow=""
-
-            }
-            // 包装文本内容在 <pre> 标签中，保留文本格式
-            var formattedText = '<pre>' + textToShow + '</pre>';
-
-            // 弹窗显示美化后的文本内容
-            layer.open({
-                type: 1,
-                title: '查看说明书',
-                content: formattedText,
-                area: ['800px', '600px']
-            });
-        });
+//         table.on('row(list)', function(obj) {
+//             // obj.data 为当前行的数据对象
+//             var rowData = obj.data;
+//
+//             // 获取需要显示的文本，这里假设你想显示 `instructions` 字段的内容
+//             var textToShow = rowData.instructions;
+//             if(textToShow == null){
+//                 textToShow=""
+//
+//             }
+//             // 包装文本内容在 <pre> 标签中，保留文本格式
+//             var formattedText = '<pre>' + textToShow + '</pre>';
+//
+//             // 弹窗显示美化后的文本内容
+//             layer.open({
+//                 type: 1,
+//                 title: '查看说明书',
+//                 content: formattedText,
+//                 area: ['800px', '600px']
+//             });
+//         });
     });
 
     // look = function(text){
@@ -219,7 +219,7 @@
 
         // 重新设置表格的 URL
         layui.table.reload('list', {
-            url: '/drug/drugInfo/data?bak=' +$("#bak").val(),
+            url: '/durgData?bak=' +$("#bak").val(),
         });
     }
 
@@ -229,7 +229,7 @@
 
     function runPython(id, keyword){
         $.ajax({
-            url : '/drug/drugInfo/crawlingData?id='+id+'&keyword='+keyword,
+            url : '/crawlingData?id='+id+'&keyword='+keyword,
             type : 'get',
             success : function(result) {
                 refreshTable();
@@ -246,7 +246,7 @@
         }, function () {
             // 用户点击确认按钮时执行的操作
             $.ajax({
-                url: '/drug/drugInfo/del?id=' + id,
+                url: '/delDurg?id=' + id,
                 type: 'get',
                 success: function (result) {
                     refreshTable();

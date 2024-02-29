@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/drugInfo")
 public class DurgControlller {
 
     @Autowired
@@ -24,7 +23,7 @@ public class DurgControlller {
         return "durg_add";
     }
 
-    @GetMapping("/data")
+    @GetMapping("/durgData")
     @ResponseBody
     public Map<String, Object> getDrugsByPage(@RequestParam("page") int page, @RequestParam("limit") int limit , @RequestParam(value= "bak", required = false) String bak) {
         System.out.println("bak:"+bak);
@@ -46,7 +45,7 @@ public class DurgControlller {
     }
 
 
-    @GetMapping("/del")
+    @GetMapping("/delDurg")
     @ResponseBody
     public String delDrug(@RequestParam("id") String id) {
         iDrugSerivce.delDrug(id);
