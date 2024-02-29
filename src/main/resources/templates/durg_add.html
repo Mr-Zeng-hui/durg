@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>添加药品</title>
+    <link href="https://www.layuicdn.com/layui/css/layui.css" rel="stylesheet">
+    <script src="https://www.layuicdn.com/layui/layui.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<div class="layui-container" style="margin-top: 20px;">
+    <form class="layui-form" id="addForm">
+        <div class="layui-form-item">
+            <label class="layui-form-label">药品名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="dname" lay-verify="required" placeholder="请输入药品名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="submitBtn">添加</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    layui.use(['form'], function(){
+        var form = layui.form;
+        // 监听表单提交
+        form.on('submit(submitBtn)', function(data){
+            // 这里可以编写提交表单的逻辑，例如通过Ajax发送数据给后端保存
+            console.log(data.field); // 打印表单数据
+            json = data.field
+            dname = json.dname
+
+            $.ajax({
+                url : '/drug/drugInfo/drugDataAdd?name='+dname,
+                type : 'get',
+                success : function(result) {
+                },error : function(jqXHR, textStatus, errorThrown) {
+                    layer.alert("出现网络故障,请稍后再试!",{icon:7,time:15000});
+                }
+            });
+            setTimeout(console.log('等等'), 200);
+            parent.layer.closeAll();
+            parent.refreshTable()
+
+        });
+    });
+</script>
+
+</body>
+</html>

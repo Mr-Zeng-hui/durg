@@ -19,6 +19,11 @@ public class DurgControlller {
         return "durglist";
     }
 
+    @GetMapping("/durgAdd")
+    public String durgAdd() {
+        return "durg_add";
+    }
+
     @GetMapping("/data")
     @ResponseBody
     public Map<String, Object> getDrugsByPage(@RequestParam("page") int page, @RequestParam("limit") int limit , @RequestParam(value= "bak", required = false) String bak) {
@@ -33,5 +38,18 @@ public class DurgControlller {
     }
 
 
+    @GetMapping("/drugDataAdd")
+    @ResponseBody
+    public String drugDataAdd(@RequestParam("name") String name) {
+        iDrugSerivce.insertDrug(name);
+        return "ok";
+    }
 
+
+    @GetMapping("/del")
+    @ResponseBody
+    public String delDrug(@RequestParam("id") String id) {
+        iDrugSerivce.delDrug(id);
+        return "ok";
+    }
 }

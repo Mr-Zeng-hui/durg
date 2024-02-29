@@ -1,5 +1,7 @@
 package com.example.demo.Service.imp;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.UUID;
 import com.example.demo.Mapper.DrugDao;
 import com.example.demo.Model.Drug;
 import com.example.demo.Service.IDrugSerivce;
@@ -65,6 +67,22 @@ public class DrugServiceImpl implements IDrugSerivce {
        }catch (Exception e) {
            return false;
        }
+    }
+
+    @Override
+    public boolean insertDrug(String name) {
+// 获取当前时间字符串，默认格式为 "yyyy-MM-dd HH:mm:ss"
+        String currentDateTime = DateUtil.now();
+        System.out.println("Current Date and Time: " + currentDateTime);
+
+        // 可以指定自定义的日期格式
+        String customFormat = DateUtil.format(DateUtil.date(), "yyyy-MM-dd HH:mm:ss");
+        return drugDao.insertDrugName(String.valueOf(UUID.fastUUID()), name, customFormat);
+    }
+
+    @Override
+    public boolean delDrug(String id) {
+        return drugDao.delDrugName(id);
     }
 
 //    public static void main(String[] args) {

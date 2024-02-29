@@ -13,4 +13,9 @@ public interface IDrugSerivce {
     int queryTotalCount();
 
     Boolean crawlingData(String id, String keyword);
+
+    boolean insertDrug(String name);
+
+    boolean delDrug(String id);
+
 }
