@@ -37,7 +37,7 @@ public class DurgControlller {
     }
 
 
-    @GetMapping("/drugDataAdd")
+    @GetMapping("/durgDataAdd")
     @ResponseBody
     public String drugDataAdd(@RequestParam("name") String name) {
         iDrugSerivce.insertDrug(name);
