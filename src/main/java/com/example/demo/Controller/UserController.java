@@ -130,10 +130,6 @@ public class UserController {
         return json;
     }
 
-    public static void main(String[] args) {
-        String input = "11111";
-        List<String> list = Arrays.asList(input.split(","));
-        System.out.println(list);
-    }
+
 
 }
