@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
         }
         List<User> users ;
         if (builder.length() > 0){
-            users = userMapper.selectAll(builder.toString());
+            users = userMapper.select(builder.toString());
         }else {
             users = userMapper.selectAll("");
         }
