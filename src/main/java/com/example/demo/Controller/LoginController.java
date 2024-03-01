@@ -86,7 +86,6 @@ public class LoginController {
                 session.setAttribute("user", user);
                 json.put("userName", user.getUserName());
                 json.put("userType", user.getType());
-                request.addHeader("user", user.toString());
                 json.put("user",user);
                 json.put("token",token);
                 json.put("msg", "登录成功");
@@ -101,8 +100,8 @@ public class LoginController {
                     CacheUtil.put(token, user, 120);
                     user.setPassword(null);
                     request.addHeader("user", user.toString());
-                    session.setAttribute("user", user);
                     json.put("userName", user.getUserName());
+                    json.put("userType", user.getType());
                     json.put("user",user);
                     json.put("token",token);
                     json.put("msg", "登录成功");
