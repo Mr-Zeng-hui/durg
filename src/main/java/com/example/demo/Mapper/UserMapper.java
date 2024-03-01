@@ -39,7 +39,7 @@ public interface UserMapper {
 //    @Update("UPDATE durg_user SET value=#{value} WHERE userNmae=#{userName}")
 //    int resetPassword(User user);
 
-    @Update("UPDATE durg_user SET password = #{user.password} WHERE email = #{user.email}")
+    @Update("UPDATE durg_user SET password = #{user.password} WHERE id = #{user.id}")
     int resetPassword(@Param("user") User user);
 
 
@@ -51,7 +51,6 @@ public interface UserMapper {
     @Select("SELECT * FROM durg_user where 1 =1  ")
     List<User> selectAll(String param);
 
-    @Select("SELECT * FROM durg_user where 1 =1  #{param}")
-    List<User> select(@Param("param")String param);
+
 
 }

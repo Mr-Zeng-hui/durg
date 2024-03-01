@@ -41,7 +41,7 @@
             <input type="text" name="" required lay-verify="required" placeholder="请输入验证码" autocomplete="off" class="layui-input">
         </div>
         <div class="layui-form-mid layui-word-aux">
-            <span type="button"  class="layui-btn layui-bg-orange"  id="verifyCode" onclick="sendSms()" style="margin-top: -8%"  >
+            <span type="button"  class="layui-btn layui-bg-orange" style="margin-top: -8%" >
                 发送验证码
             </span>
         </div>
@@ -82,35 +82,6 @@
             layer.msg(JSON.stringify(data.field));
             return false;
         });
-
-        sendSms = function(){
-            debugger;
-            var email = $("#email_acc").val();
-            if (!email){
-                layer.msg('请输入邮箱！', {icon: 2,time: 1000});
-                return;
-            }
-            $.ajax({
-                url:'/email/send',
-                data:JSON.stringify({"email_acc":email}),
-                type: 'POST',
-                dataType:'json',
-                contentType: 'application/json',
-                success:function(result){
-                    if (result.code == 200){
-                        flag = false;
-                        layer.msg('发送成功！', {icon: 1,time: 2000});
-                        $("#verifyCode").addClass("layui-btn-disabled");
-                        setTimeout(function(){
-                            $("#verifyCode").removeClass("layui-btn-disabled");
-                        },30*1000);
-                    }else{
-                        layer.msg(result.msg, {icon: 2,time: 2000});
-                    }
-                }
-            });
-
-        }
     });
 </script>
 

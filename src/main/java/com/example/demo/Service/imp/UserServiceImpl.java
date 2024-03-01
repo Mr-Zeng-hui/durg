@@ -45,24 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public  List<User>  selectAll(Map jsonObject) {
-        StringBuilder  builder = new StringBuilder();
-        if (jsonObject.get("email") != null){
-            builder.append(" and email = "+jsonObject.get("email"));
-        }else if (jsonObject.get("userName") != null){
-        builder.append(" and userName = "+jsonObject.get("userName"));
-        } else if (jsonObject.get("type")!= null) {
-            builder.append(" and type = "+jsonObject.get("type"));
-        } else if (jsonObject.get("state")!= null) {
-            builder.append(" and state = "+jsonObject.get("state"));
-        } else if (jsonObject.get("securityIssues")!= null) {
-            builder.append(" and securityIssues like % "+jsonObject.get("securityIssues")+"%");
-        }
-        List<User> users ;
-        if (builder.length() > 0){
-            users = userMapper.select(builder.toString());
-        }else {
-            users = userMapper.selectAll("");
-        }
+        List<User>  users = userMapper.selectAll("");
         return users;
     }
 
