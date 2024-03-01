@@ -66,8 +66,9 @@
 		$.ajax({
 			dataType:'application/json',
 			url:'/email/send',
-			data:{to:email},
-			type:'post',
+			data:JSON.stringify({"email_acc":email}),
+			type: 'POST',
+			contentType: 'application/json',
 			success:function(result){
 				if (result.code == 200){
 					layer.msg('发送成功！', {icon: 1,time: 2000});
@@ -103,7 +104,7 @@
 		}
 		var verifyCode = $("#verifyCode").val();
 		$.ajax({
-			dataType:'application/json',
+			contentType:'application/json',
 			url:'/admin/login',
 			data:{username:email,password:password,verifyCode:verifyCode},
 			type:'post',

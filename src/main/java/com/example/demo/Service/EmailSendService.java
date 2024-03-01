@@ -62,7 +62,7 @@ public class EmailSendService {
             emailUser = email.getEmail();
             emailPwd = email.getEmailPwd();
             emailType= Integer.valueOf(email.getEmailType());
-            String to = jsonInfo.getString("to");
+            String to = jsonInfo.getString("email_acc");
             MiniEmail miniEmail = new MiniEmailFactoryBuilder().build(MailConfig.config(emailUser, emailPwd)
                     .setMailDebug(Boolean.TRUE)
                     .setSenderNickname("药品管理系统")

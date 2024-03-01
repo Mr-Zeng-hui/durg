@@ -14,6 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/admin/**")
                 .excludePathPatterns("/admin")
                 .excludePathPatterns("/admin/registerUser")
+                .excludePathPatterns("/email/send")
                 .excludePathPatterns("/admin/login");
     }
 }
