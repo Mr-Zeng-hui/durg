@@ -82,6 +82,26 @@ public class UserController {
         return json;
     }
 
+    @RequestMapping("/delSimpleUser")
+    @ResponseBody
+    public JSONObject delSimpleUser(@RequestParam("id") String id){
+        JSONObject json = new JSONObject();
+        json.put("msg", "删除用户失败");
+        json.put("code", 400);
+        try {
+            userService.deleteUser(id);
+            json.put("msg", "删除用户成功");
+            json.put("code", 200);
+            return json;
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+            json.put("msg", e.getMessage());
+            json.put("code", 400);
+        }
+        return json;
+    }
+
+
     @RequestMapping("/deleteUser")
     @ResponseBody
     public JSONObject deleteUser(@RequestBody JSONObject jsonObject){
