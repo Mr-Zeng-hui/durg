@@ -39,7 +39,7 @@ public interface UserMapper {
 //    @Update("UPDATE durg_user SET value=#{value} WHERE userNmae=#{userName}")
 //    int resetPassword(User user);
 
-    @Update("UPDATE durg_user SET password = #{user.password} WHERE email = #{user.email}")
+    @Update("UPDATE durg_user SET password = #{user.password} WHERE id = #{user.id}")
     int resetPassword(@Param("user") User user);
 
 

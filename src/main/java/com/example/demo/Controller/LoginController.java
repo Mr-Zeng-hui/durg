@@ -196,7 +196,7 @@ public class LoginController {
         json.put("msg", "重置失败");
         json.put("code", 400);
         try {
-            String username = jsonObject.getString("username");
+            String id = jsonObject.getString("id");
             String newPassword = jsonObject.getString("newPassword");
 //            String verifyCode = jsonObject.getString("verifyCode");
 //            String cachedValue = CacheUtil.get("CODE_" + username).toString();
@@ -209,7 +209,7 @@ public class LoginController {
 
             User user = new User();
             user.setPassword(newPassword);
-            user.setEmail(username);
+            user.setId(id);
             userService.resetPassword(user);
             json.put("msg", "重置成功");
             json.put("code", 200);
