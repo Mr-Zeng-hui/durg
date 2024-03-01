@@ -3,6 +3,7 @@ package com.example.demo.Controller;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.Model.User;
 import com.example.demo.Service.UserService;
+import com.example.demo.util.CacheUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,28 +42,33 @@ public class UserController {
 
     @RequestMapping("/add")
     @ResponseBody
-    public JSONObject userAdd(@RequestBody User user){
+    public JSONObject userAdd(@RequestBody JSONObject jsonObject){
         JSONObject json = new JSONObject();
         json.put("msg", "新增用户失败");
         json.put("code", 400);
         try {
 //            String userName = user.getUserName();
+            String verifyCode = jsonObject.getString("verifyCode");
+            String email_acc = jsonObject.getString("email_acc");
+            User user = jsonObject.toJavaObject(User.class);
+            user.setEmail(email_acc);
             String password = user.getPassword();
-            String email = user.getEmail();
-            User user1 = userService.checkUser(email, password);
+            String cachedValue = CacheUtil.get("CODE_" + email_acc).toString();
+            logger.info("verifyCode:" + verifyCode + "cachedValue:" + cachedValue);
+
+            if (!StringUtils.equals(verifyCode, cachedValue)) {
+                logger.info("验证码错误");
+                json.put("msg", "验证码错误");
+                json.put("code", 400);
+                return json;
+            }
+            User user1 = userService.checkUser(email_acc, password);
             if (user1 != null){
                 logger.info("该邮箱已存在");
                 json.put("msg", "该邮箱已存在");
                 json.put("code", 400);
                 return json;
             }
-
-//            if (StringUtils.isNotBlank(email)&&StringUtils.equals(email1,email)){
-//                logger.info("该邮箱已存在");
-//                json.put("msg", "该邮箱已存在");
-//                json.put("code", 400);
-//                return json;
-//            }
             user.setId(UUID.randomUUID().toString());
             int i = userService.insertUser(user);
             if (i >0){
