@@ -26,6 +26,19 @@ public class EmailSendService {
 
     private final EmailMapper mapper;
 
+    /**
+     * 按照前端页面上的格式来
+     * ['自定义','网易163邮箱','新浪邮箱','企业邮箱','QQ邮箱','移动139邮箱','微软outlook邮箱'];
+     */
+    private static SmtpHostEnum[] smtpHost = {
+             SmtpHostEnum.SMTP_163
+            ,SmtpHostEnum.SMTP_SINA
+            ,SmtpHostEnum.SMTP_ENTERPRISE_QQ
+            ,SmtpHostEnum.SMTP_QQ
+            ,SmtpHostEnum.SMTP_139
+            ,SmtpHostEnum.SMTP_OUTLOOK
+    };
+
     @Autowired
     public EmailSendService(EmailMapper mapper) {
         this.mapper = mapper;
@@ -40,6 +53,7 @@ public class EmailSendService {
             String content;
             String emailUser;
             String emailPwd;
+            int emailType;
             Email email = (Email) CacheUtil.get("Email");
             if (email == null) {
                 email = mapper.select(1);
@@ -47,11 +61,12 @@ public class EmailSendService {
             content = email.getTemplate().replace("[CODE]", getRandomCode());
             emailUser = email.getEmail();
             emailPwd = email.getEmailPwd();
+            emailType= Integer.valueOf(email.getEmailType());
             String to = jsonInfo.getString("to");
             MiniEmail miniEmail = new MiniEmailFactoryBuilder().build(MailConfig.config(emailUser, emailPwd)
                     .setMailDebug(Boolean.TRUE)
                     .setSenderNickname("药品管理系统")
-                    .setMailSmtpHost(SmtpHostEnum.SMTP_163)
+                    .setMailSmtpHost(smtpHost[emailType])
             ).init();
 
             List<String> sendSuccessToList = miniEmail
