@@ -18,4 +18,5 @@ public interface IDrugSerivce {
 
     boolean delDrug(String id, String name);
 
+    Drug getDurgById(String id);
 }

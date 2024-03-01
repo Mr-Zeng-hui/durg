@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+import com.example.demo.Model.Drug;
 import com.example.demo.Service.IDrugSerivce;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,5 +51,13 @@ public class DurgControlller {
     public String delDrug(@RequestParam("id") String id, @RequestParam("name") String name) {
         iDrugSerivce.delDrug(id, name);
         return "ok";
+    }
+
+    @GetMapping("/getDurgById")
+    @ResponseBody
+    public String getDurgById(@RequestParam("id") String id) {
+        Drug drug = iDrugSerivce.getDurgById(id);
+        System.out.println(drug.toString());
+        return drug.getInstructions();
     }
 }
