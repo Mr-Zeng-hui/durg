@@ -20,19 +20,19 @@
 		<strong>药品查询系统</strong>
 	</h1>
 	<div class="layui-user-icon larry-login">
-		<input type="text" placeholder="邮箱账号" class="login_txtbx"/>
+		<input type="text" placeholder="邮箱账号" id="email_acc" name="email_acc" class="login_txtbx"/>
 	</div>
 	<div class="layui-pwd-icon larry-login">
-		<input type="password" placeholder="密码" class="login_txtbx"/>
+		<input type="password" id="email_pass" name="email_pass" placeholder="密码" class="login_txtbx"/>
 	</div>
 	<div class="layui-val-icon larry-login">
 		<div class="layui-code-box">
 			<input type="text" id="code" name="code" placeholder="验证码" maxlength="8" class="login_txtbx">
-			<input type="button" class="layui-btn layui-bg-orange verifyImg" value="获取验证码"  id="verifyImg" onclick="">
+			<input type="button" name="verifyCode" class="layui-btn layui-bg-orange verifyImg" value="获取验证码"  id="verifyCode" onclick="sendSms()">
 		</div>
 	</div>
 	<div class="layui-submit larry-login" style="margin-top: 5%">
-		<input type="button" value="登陆" class="submit_btn"/>
+		<input type="button" value="登陆" class="submit_btn" onclick="submit()"/>
 	</div>
 	<div class="layui-submit larry-login" style="margin-top: 5%">
 		<input type="button" value="免费注册" class="layui-btn-xs" style="float: right;"/>
@@ -55,6 +55,71 @@
 			location.href="index.html";
 		});
 	});
+
+	sendSms = function(){
+		debugger;
+		var email = $("#email_acc").val();
+		if (!email){
+			layer.msg('请输入邮箱！', {icon: 2,time: 1000});
+			return;
+		}
+		$.ajax({
+			dataType:'application/json',
+			url:'/email/send',
+			data:{to:email},
+			type:'post',
+			success:function(result){
+				if (result.code == 200){
+					layer.msg('发送成功！', {icon: 1,time: 2000});
+					$("#verifyCode").addcss("layui-btn-disabled");
+					setTimeout(function(){
+						$("#verifyCode").removecss("layui-btn-disabled");
+					},30*1000);
+				}else{
+					layer.msg(result.msg, {icon: 1,time: 2000});
+				}
+
+				//$(".layui-main").html(result);
+			},beforeSend:function(){
+			//	$(".layui-main").empty();
+			//	layer.load(1);
+			},complete:function(){
+				//layer.closeAll('loading');
+			}
+		});
+
+	}
+
+	submit = function(){
+		var email = $("#email_acc").val();
+		if (!email){
+			layer.msg('请输入邮箱！', {icon: 2,time: 1000});
+			return;
+		}
+		var password = $("#email_pass").val();
+		if (!password){
+			layer.msg('请输入密码！', {icon: 2,time: 1000});
+			return;
+		}
+		var verifyCode = $("#verifyCode").val();
+		$.ajax({
+			dataType:'application/json',
+			url:'/admin/login',
+			data:{username:email,password:password,verifyCode:verifyCode},
+			type:'post',
+			success:function(result){
+				if (result.code == 200){
+					layer.msg('登录成功！', {icon: 1,time: 2000});
+					location.href="/index";
+				}else{
+					layer.msg(result.msg, {icon: 2,time: 2000});
+				}
+			}
+		});
+
+
+	}
+
 </script>
 </body>
 </html>
