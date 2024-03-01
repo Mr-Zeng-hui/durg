@@ -16,6 +16,6 @@ public interface IDrugSerivce {
 
     boolean insertDrug(String name);
 
-    boolean delDrug(String id);
+    boolean delDrug(String id, String name);
 
 }

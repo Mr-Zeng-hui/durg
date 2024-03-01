@@ -47,8 +47,8 @@ public class DurgControlller {
 
     @GetMapping("/delDurg")
     @ResponseBody
-    public String delDrug(@RequestParam("id") String id) {
-        iDrugSerivce.delDrug(id);
+    public String delDrug(@RequestParam("id") String id, @RequestParam("name") String name) {
+        iDrugSerivce.delDrug(id, name);
         return "ok";
     }
 }
