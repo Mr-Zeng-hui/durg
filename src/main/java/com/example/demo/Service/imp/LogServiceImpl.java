@@ -32,7 +32,7 @@ public class LogServiceImpl implements ILogSerivce {
     public Map<String, Object> queryForPage(int pageNum, int pageSize, String bak) {
         int offset = (pageNum - 1) * pageSize;
         List<Log> drugList = logDao.queryForPage(pageSize, offset, bak);
-        int totalCount = logDao.queryTotalCount();
+        int totalCount = logDao.queryTotalCount(bak);
         Map<String, Object> result = new HashMap<>();
         result.put("code", 0);
         result.put("msg", "");
@@ -43,7 +43,7 @@ public class LogServiceImpl implements ILogSerivce {
 
     @Override
     public int queryTotalCount() {
-        return logDao.queryTotalCount();
+        return 0;
     }
 
     @Override

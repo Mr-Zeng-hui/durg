@@ -25,8 +25,15 @@ public interface LogDao {
     List<Log> queryForPage(@Param("pageSize") int pageSize, @Param("offset") int offset, @Param("bak") String bak);
 
     // 查询总记录数
-    @Select("SELECT COUNT(*) FROM log")
-    int queryTotalCount();
+    @Select({
+            "<script>",
+            "SELECT COUNT(*) FROM log",
+            "<if test='bak != null and bak != \"\"'>",
+            "WHERE durgname LIKE '%' || #{bak} || '%'",
+            "</if>",
+            "</script>"
+    })
+    int queryTotalCount(@Param("bak") String bak);
 
     @Insert({"INSERT INTO log (id, durgid , durgname, userid, username, time, type) VALUES (#{id}, #{durgid}, #{durgname}, #{userid}, #{username}, #{time}, #{type})"})
     boolean insertLog(@Param("id") String id, @Param("durgid") String durgid, @Param("durgname") String durgname ,@Param("userid") String userid,@Param("username") String username, @Param("time") String time, @Param("type") String type);

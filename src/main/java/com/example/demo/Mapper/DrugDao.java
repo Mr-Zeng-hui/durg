@@ -26,8 +26,15 @@ public interface DrugDao {
     List<Drug> queryForPage(@Param("pageSize") int pageSize, @Param("offset") int offset ,@Param("bak") String bak);
 
     // 查询总记录数
-    @Select("SELECT COUNT(*) FROM drug_set")
-    int queryTotalCount();
+    @Select({
+            "<script>",
+            "SELECT COUNT(*) FROM drug_set",
+            "<if test='bak != null and bak != \"\"'>",
+            "WHERE bak LIKE '%' || #{bak} || '%'",
+            "</if>",
+            "</script>"
+    })
+    int queryTotalCount(@Param("bak") String bak);
 
     @Insert({"INSERT INTO drug_set (id, name , type, time) VALUES (#{id}, #{name}, '1', #{time})"})
     boolean insertDrugName(@Param("id") String id, @Param("name") String name,  @Param("time") String time);
@@ -41,5 +48,9 @@ public interface DrugDao {
 
     @Select({"select * from drug_set where id = #{id}"})
     Drug getDurgById(@Param("id") String id);
+
+
+    @Select({"SELECT * FROM drug_set"})
+    List<Drug> queryForList();
 
 }

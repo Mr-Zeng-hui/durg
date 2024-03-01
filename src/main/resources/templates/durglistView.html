@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>药品查询</title>
+    <link href="https://www.layuicdn.com/layui/css/layui.css" rel="stylesheet">
+    <script src="https://www.layuicdn.com/layui/layui.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <style>
+        .layui-table-img {
+            width: 100px;  /* 设置图片宽度 */
+            height: 100px; /* 设置图片高度 */
+        }
+        .layui-table-view .layui-table {
+            table-layout: fixed; /* 使表格布局固定，以便设置行高生效 */
+        }
+
+        .layui-table-cell  {
+            height: 100px; /* 设置行高 */
+            line-height: 100px; /* 设置行高 */
+        }
+    </style>
+</head>
+<body>
+<form autocomplete="off" onsubmit="return false;" class="form-inline" id="batchMgrForm">
+    <div class="layui-card" style="margin-bottom: 0px;">
+        <div class="layui-card-body">
+        </div>
+    </div>
+    <div class="layui-card" style="margin-top: 1px;border-bottom:1px solid #ccc;">
+        <div class="layui-card-body">
+            <div class="layui-row">
+                <div class="layui-form-item">
+                    <div style="width: 50%;float: left;">
+                        <label class="layui-form-label">主治症状</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="bak" id="bak" placeholder="请输入" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <button type="button" class="layui-btn" style="margin-left: 10px;" onclick="query()">搜索</button>
+                  </div>
+                <table class="layui-hide" id="list" style="line-height: 80px;"></table>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script>
+
+
+    layui.use('table', function(){
+        var table = layui.table;
+        // 已知数据渲染
+        var inst = table.render({
+            elem: '#list',
+            cols: [
+                [ //标题栏
+                    {field: 'id', title: 'ID', width: 150, style: 'height: 100px; line-height: 100px;'},
+                    {field: 'name', title: '药品名称', width: 150,},
+                    // {field: 'bigname', title: '详细名称', width: 100},
+                    {field: 'bak', title: '主治症状', width: 180},
+                    {field: 'img1', title: '百度健康药品图片', width: 200, templet: function(d){
+                            if (d.img1) {
+                                return '<img src="'+ d.img1 +'" class="layui-table-img" onclick="enlargeImage(\'' + d.img1 + '\')"/>';
+                            } else {
+                                return '';
+                            }
+                        }},
+
+                    {field: 'price1', title: '百度健康价格', width: 150},
+                    {field: 'img2', title: '阿里大药房药品图片', width: 200, templet: function(d){
+                            if (d.img2) {
+                                return '<img src="'+ d.img2 +'" class="layui-table-img" onclick="enlargeImage(\'' + d.img2 + '\')"/>';
+                            } else {
+                                return '';
+                            }
+                        }},
+
+                    {field: 'price2', title: '阿里大药房价格', width: 150},
+                    {field: 'instructions', title: '说明书'},
+                    {field:'OPER', title: '操作',fixed:'right',align:'center',width: 300, templet : function(row){
+                            var temp="";
+
+                            temp+= ' <span href="javascript:void(0)" class="layui-btn layui-btn-xs layui-btn-primary" onclick="look(\''+row.id+'\')">说明书</span> ';
+
+                            return temp;
+                        }}
+                ]
+            ],
+            url: '/durgData',  // 后端接口地址
+            page: true, // 是否显示分页
+            limit:50,
+            limits:[50,100,500],
+            height: 'full-200'
+        });
+
+
+    });
+
+    function look(id){
+        // 在这里处理点击查看说明书的逻辑，弹出小窗口展示字段内容
+        $.ajax({
+            url: '/getDurgById?id=' + id,
+            type: 'get',
+            success: function (result) {
+                var textToShow = result;
+                if(textToShow == null){
+                    textToShow=""
+
+                }
+                // 包装文本内容在 <pre> 标签中，保留文本格式
+                var formattedText = '<pre>' + textToShow + '</pre>';
+                layer.open({
+                    type: 1,
+                    title: "说明书",
+                    content:formattedText,
+                    area: ['800px', '600px']
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                layer.alert('出现网络故障，请稍后再试！', { icon: 7, time: 15000 });
+            }
+        });
+    }
+
+
+    // 模拟一个接口调用成功后刷新表格的操作
+    function refreshTable() {
+        // 在实际场景中，你需要调用你的接口，然后在接口回调中执行下面的代码
+        // 调用 table.reload 方法刷新表格
+        // layui.table.reload('list'); // test 为表格 lay-filter 的值，需要与 table.render 中的 lay-filter 一致
+
+        // 重新设置表格的 URL
+        layui.table.reload('list', {
+            url: '/durgData?bak=' +$("#bak").val(),
+        });
+    }
+
+    function query() {
+        refreshTable();
+    }
+
+    function enlargeImage(imgUrl) {
+        layer.photos({
+            photos: {
+                data: [{
+                    src: imgUrl
+                }]
+            },
+            shadeClose: true,
+            closeBtn: 2,
+            anim: 0
+        });
+    }
+
+
+</script>
+
+</body>
+</html>

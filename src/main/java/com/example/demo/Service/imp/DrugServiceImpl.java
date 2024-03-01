@@ -2,6 +2,7 @@ package com.example.demo.Service.imp;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.UUID;
+import com.example.demo.Controller.DurgControlller;
 import com.example.demo.Mapper.DrugDao;
 import com.example.demo.Mapper.LogDao;
 import com.example.demo.Model.Drug;
@@ -9,6 +10,8 @@ import com.example.demo.Service.IDrugSerivce;
 import com.example.demo.Service.InitDrugService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,17 +30,20 @@ import java.util.Map;
 
 @Service
 public class DrugServiceImpl implements IDrugSerivce {
+
     @Autowired
     private DrugDao drugDao;
 
     @Autowired
     private LogDao logDao;
+    private static Logger logger = LoggerFactory.getLogger(DrugServiceImpl.class);
 
     @Override
     public Map<String, Object> queryForPage(int pageNum, int pageSize, String bak) {
         int offset = (pageNum - 1) * pageSize;
         List<Drug> drugList = drugDao.queryForPage(pageSize, offset, bak);
-        int totalCount = drugDao.queryTotalCount();
+        int totalCount = drugDao.queryTotalCount(bak);
+        System.out.println(totalCount);
         Map<String, Object> result = new HashMap<>();
         result.put("code", 0);
         result.put("msg", "");
@@ -48,21 +54,22 @@ public class DrugServiceImpl implements IDrugSerivce {
 
     @Override
     public int queryTotalCount() {
-        return drugDao.queryTotalCount();
+        return 0;
     }
 
     @Override
     public Boolean crawlingData(String id, String keyword) {
-       try {
+        logger.info("爬取信息:"+keyword);
+        try {
+           String currentWorkingDir = System.getProperty("user.dir");
 
-           // Python 脚本的路径
-           String pythonScriptPath = "C://Users//hammer//IdeaProjects//durg//src//main//resources//python//baiduDrug.py";
+           String pythonScriptPath = Paths.get(currentWorkingDir, "baiduDrug.py").toString();
 
+//           // Python 脚本的路径
+//           String pythonScriptPath = "C://Users//hammer//IdeaProjects//durg//src//main//resources//python//baiduDrug.py";
            // 构造执行命令的字符串
            String filename = String.valueOf(UUID.fastUUID())+".json";
            String command = "python " + pythonScriptPath+" "+keyword+" "+filename;
-           System.out.println(command);
-
            // 执行命令
            Process process = Runtime.getRuntime().exec(command);
 
@@ -79,7 +86,6 @@ public class DrugServiceImpl implements IDrugSerivce {
            System.out.println("Exit Code: " + exitCode);
            Thread.sleep(5000);
            //URL resource = InitDrugService.class.getClassLoader().getResource("python/"+filename);
-           String currentWorkingDir = System.getProperty("user.dir");
            String absolutePath = Paths.get(currentWorkingDir, filename).toString();
            //absolutePath = "C:\\Users\\hammer\\IdeaProjects\\durg\\f33227cf-a51e-4c99-aaca-a1feec5a390d.json";
            System.out.println("Absolute Path: " + absolutePath);
@@ -158,6 +164,17 @@ public class DrugServiceImpl implements IDrugSerivce {
         //还要插入日志
         logDao.insertLog(String.valueOf(UUID.fastUUID()), id, drug.getName(), "system", "system", customFormat, "lookDurg");
         return drug;
+    }
+
+    @Override
+    public Boolean crawlingAllData() {
+        List<Drug> drugs = drugDao.queryForList();
+        for(Drug drug: drugs){
+            String id = drug.getId();
+            String name = drug.getName();
+            crawlingData(id, name);
+        }
+        return true;
     }
 
 //    public static void main(String[] args) {

@@ -40,9 +40,15 @@
                         </div>
                     </div>
                     <button type="button" class="layui-btn" style="margin-left: 10px;" onclick="query()">搜索</button>
+
+
+                    <!-- 添加按钮 -->
+                    <button type="button" class="layui-btn layui-btn-danger" style="float: right;" onclick="crawlAll()">爬取全部</button>
+
                     <!-- 添加按钮 -->
                     <button type="button" class="layui-btn layui-btn-primary" style="float: right;" onclick="openAddPage()">添加药品</button>
-                </div>
+
+                   </div>
                 <table class="layui-hide" id="list" style="line-height: 80px;"></table>
             </div>
         </div>
@@ -174,7 +180,8 @@
             page: true, // 是否显示分页
             limit:50,
             limits:[50,100,500],
-            height: 'full-160'
+            height: 'full-200',
+
         });
 
 // 监听表格行点击事件
@@ -227,7 +234,6 @@
         });
     }
 
-
     // 模拟一个接口调用成功后刷新表格的操作
     function refreshTable() {
         // 在实际场景中，你需要调用你的接口，然后在接口回调中执行下面的代码
@@ -242,6 +248,18 @@
 
     function query() {
         refreshTable();
+    }
+
+    function crawlAll(){
+        $.ajax({
+            url : '/crawlingAllData',
+            type : 'get',
+            success : function(result) {
+                refreshTable();
+            },error : function(jqXHR, textStatus, errorThrown) {
+                layer.alert("出现网络故障,请稍后再试!",{icon:7,time:15000});
+            }
+        });
     }
 
     function runPython(id, keyword){
