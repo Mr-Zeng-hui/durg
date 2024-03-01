@@ -69,7 +69,7 @@ public class LoginController {
                 User user = userService.checkUserEmail(username);
 
                 if (user == null) {
-                    user =new User();
+                    user = new User();
                     user.setUserName(username);
                     user.setEmail(username);
                     user.setPassword("e10adc3949ba59abbe56e057f20f883e");
@@ -86,8 +86,8 @@ public class LoginController {
                 session.setAttribute("user", user);
                 json.put("userName", user.getUserName());
                 json.put("userType", user.getType());
-                json.put("user",user);
-                json.put("token",token);
+                json.put("user", user);
+                json.put("token", token);
                 json.put("msg", "登录成功");
                 json.put("code", 200);
                 return json;
@@ -102,8 +102,8 @@ public class LoginController {
                     request.addHeader("user", user.toString());
                     json.put("userName", user.getUserName());
                     json.put("userType", user.getType());
-                    json.put("user",user);
-                    json.put("token",token);
+                    json.put("user", user);
+                    json.put("token", token);
                     json.put("msg", "登录成功");
                     json.put("code", 200);
                     return json;
@@ -197,25 +197,24 @@ public class LoginController {
         json.put("code", 400);
         try {
             String username = jsonObject.getString("username");
-            String oldPassword = jsonObject.getString("oldPassword");
             String newPassword = jsonObject.getString("newPassword");
-            String verifyCode = jsonObject.getString("verifyCode");
-            String cachedValue = CacheUtil.get("CODE_" + username).toString();
-            if (!StringUtils.equals(verifyCode, cachedValue)) {
-                logger.info("验证码错误");
-                json.put("msg", "验证码错误");
-                json.put("code", 400);
-                return json;
-            }
-            User user = userService.checkUser(username, oldPassword);
-            logger.info("user:" + user);
-            if (user != null) {
-                user.setPassword(newPassword);
-                userService.resetPassword(user);
-                json.put("msg", "重置成功");
-                json.put("code", 200);
-                return json;
-            }
+//            String verifyCode = jsonObject.getString("verifyCode");
+//            String cachedValue = CacheUtil.get("CODE_" + username).toString();
+//            if (!StringUtils.equals(verifyCode, cachedValue)) {
+//                logger.info("验证码错误");
+//                json.put("msg", "验证码错误");
+//                json.put("code", 400);
+//                return json;
+//            }
+
+            User user = new User();
+            user.setPassword(newPassword);
+            user.setEmail(username);
+            userService.resetPassword(user);
+            json.put("msg", "重置成功");
+            json.put("code", 200);
+            return json;
+//            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             json.put("msg", e.getMessage());
