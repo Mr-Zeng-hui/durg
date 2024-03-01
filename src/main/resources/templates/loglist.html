@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Demo</title>
+    <link href="https://www.layuicdn.com/layui/css/layui.css" rel="stylesheet">
+    <script src="https://www.layuicdn.com/layui/layui.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <style>
+    </style>
+</head>
+<body>
+<form autocomplete="off" onsubmit="return false;" class="form-inline" id="batchMgrForm">
+    <div class="layui-card" style="margin-bottom: 0px;">
+        <div class="layui-card-body">
+        </div>
+    </div>
+    <div class="layui-card" style="margin-top: 1px;border-bottom:1px solid #ccc;">
+        <div class="layui-card-body">
+            <div class="layui-row">
+                <div class="layui-form-item">
+                    <div style="width: 50%;float: left;">
+                        <label class="layui-form-label">药品名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="bak" id="bak" placeholder="请输入" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <button type="button" class="layui-btn" style="margin-left: 10px;" onclick="query()">搜索</button>
+                   </div>
+                <table class="layui-hide" id="list" style="line-height: 80px;"></table>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script>
+
+    layui.use('table', function() {
+        var table = layui.table;
+        // 已知数据渲染
+        var inst = table.render({
+            elem: '#list',
+            cols: [
+                [ //标题栏
+                    {field: 'id', title: 'ID', width: 350},
+                    {field: 'durgname', title: '药品名称', width: 250},
+                    {field: 'type', title: '操作描述'},
+                    {field: 'time', title: '操作时间', width: 250},
+                    {field: 'username', title: '操作人', width: 250}
+                ]
+            ],
+            url: '/logData',  // 后端接口地址
+            page: true, // 是否显示分页
+            limit: 20,
+            limits: [20, 100, 500],
+            height: 'full-160'
+        });
+    });
+    // 模拟一个接口调用成功后刷新表格的操作
+    function refreshTable() {
+        // 在实际场景中，你需要调用你的接口，然后在接口回调中执行下面的代码
+        // 调用 table.reload 方法刷新表格
+        // layui.table.reload('list'); // test 为表格 lay-filter 的值，需要与 table.render 中的 lay-filter 一致
+
+        // 重新设置表格的 URL
+        layui.table.reload('list', {
+            url: '/logData?bak=' +$("#bak").val(),
+        });
+    }
+
+    function query() {
+        refreshTable();
+    }
+
+
+
+
+</script>
+
+</body>
+</html>

@@ -99,7 +99,7 @@
 
                             temp+= ' <span href="javascript:void(0)" class="layui-btn layui-btn-xs layui-btn-warn" onclick="runPython(\''+row.id+'\', \''+row.name+'\')">爬取最新</span> ';
 
-                            temp += '<span href="javascript:void(0)" class="layui-btn layui-btn-xs layui-btn-danger" onclick="del(\'' + row.id + '\')">删除</span>';
+                            temp += '<span href="javascript:void(0)" class="layui-btn layui-btn-xs layui-btn-danger" onclick="del(\'' + row.id + '\', \''+row.name+'\')">删除</span>';
 
                             return temp;
                         }}
@@ -238,7 +238,7 @@
             }
         });
     }
-    function del(id) {
+    function del(id, name) {
         layer.confirm('确认删除吗？', {
             icon: 3, // 图标（0-7），可以根据需求修改
             title: '提示',
@@ -246,7 +246,7 @@
         }, function () {
             // 用户点击确认按钮时执行的操作
             $.ajax({
-                url: '/delDurg?id=' + id,
+                url: '/delDurg?id=' + id+"&name="+name,
                 type: 'get',
                 success: function (result) {
                     refreshTable();
