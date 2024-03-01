@@ -88,7 +88,7 @@
 			return;
 		}
 		var password = $("#email_pass").val();
-		if (flag){
+		if (flag && !password){
 			layer.msg('请输入密码！', {icon: 2,time: 1000});
 			return;
 		}
