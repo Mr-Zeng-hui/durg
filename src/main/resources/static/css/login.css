@@ -109,9 +109,9 @@
 	outline:none;
 	border:none;
 }
-.layui-code-box input.login_txtbx:focus{
+/*.layui-code-box input.login_txtbx:focus{
 	font-size: 20px;
-}
+}*/
 .layui-code-box  .verifyImg{
 	display: block;
 	width: 43%;
