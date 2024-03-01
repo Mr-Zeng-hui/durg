@@ -8,14 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Controller
 public class UserController {
@@ -41,30 +39,31 @@ public class UserController {
     }*/
 
 
-    @GetMapping("/add")
+    @RequestMapping("/add")
     @ResponseBody
     public JSONObject userAdd(@RequestBody User user){
         JSONObject json = new JSONObject();
         json.put("msg", "新增用户失败");
         json.put("code", 400);
         try {
-            String userName = user.getUserName();
+//            String userName = user.getUserName();
             String password = user.getPassword();
             String email = user.getEmail();
-            User user1 = userService.checkUser(userName, password);
+            User user1 = userService.checkUser(email, password);
             if (user1 != null){
-                logger.info("该用户已存在");
-                json.put("msg", "该用户已存在");
-                json.put("code", 400);
-                return json;
-            }
-            String email1 = user1.getEmail();
-            if (StringUtils.isNotBlank(email)&&StringUtils.equals(email1,email)){
                 logger.info("该邮箱已存在");
                 json.put("msg", "该邮箱已存在");
                 json.put("code", 400);
                 return json;
             }
+
+//            if (StringUtils.isNotBlank(email)&&StringUtils.equals(email1,email)){
+//                logger.info("该邮箱已存在");
+//                json.put("msg", "该邮箱已存在");
+//                json.put("code", 400);
+//                return json;
+//            }
+            user.setId(UUID.randomUUID().toString());
             int i = userService.insertUser(user);
             if (i >0){
                 logger.info("新增用户成功");
@@ -83,7 +82,7 @@ public class UserController {
         return json;
     }
 
-    @GetMapping("/deleteUser")
+    @RequestMapping("/deleteUser")
     @ResponseBody
     public JSONObject deleteUser(@RequestBody JSONObject jsonObject){
         JSONObject json = new JSONObject();
