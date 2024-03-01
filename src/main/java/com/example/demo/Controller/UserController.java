@@ -118,7 +118,7 @@ public class UserController {
             List<User> users = userService.selectAll(jsonObject);
             if (users != null){
                 json.put("msg", "查询用户成功");
-                json.put("code", 200);
+                json.put("code", 0);
                 json.put("data", users);
                 return json;
             }
