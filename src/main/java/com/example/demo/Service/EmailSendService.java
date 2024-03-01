@@ -84,7 +84,14 @@ public class EmailSendService {
         jsonObject.put("code", 200);
         jsonObject.put("msg", "修改成功");
         try {
-
+            email.setId("1");
+            int i = mapper.updateValue(email);
+            if (i == 1) {
+                CacheUtil.put("Email", email, 100);
+            }else {
+                jsonObject.put("code", 400);
+                jsonObject.put("msg", "修改失败");
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

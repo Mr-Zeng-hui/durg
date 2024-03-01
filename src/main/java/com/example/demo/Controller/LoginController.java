@@ -66,6 +66,7 @@ public class LoginController {
                 }
                 String token = user.getUserName() + "," + user.getPassword();
                 request.setAttribute("token", token);
+                CacheUtil.put(token,user,120);
                 user.setPassword(null);
                 session.setAttribute("user", user);
                 return "index";
@@ -75,6 +76,7 @@ public class LoginController {
                 if (user != null) {
                     String token = user.getUserName() + "," + user.getPassword();
                     request.setAttribute("token", token);
+                    CacheUtil.put(token,user,120);
                     user.setPassword(null);
                     session.setAttribute("user", user);
                     return "index";
@@ -93,7 +95,9 @@ public class LoginController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
+    public String logout(HttpSession session, HttpServletRequest request) {
+        Object token = request.getAttribute("token");
+        CacheUtil.remove(token.toString());
         session.removeAttribute("user");
         return "redirect:/admin";
     }
