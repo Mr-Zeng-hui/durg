@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -82,18 +83,21 @@ public class UserController {
 
     @GetMapping("/deleteUser")
     @ResponseBody
-    public JSONObject deleteUser(@RequestBody User user){
+    public JSONObject deleteUser(@RequestBody JSONObject jsonObject){
         JSONObject json = new JSONObject();
         json.put("msg", "删除用户失败");
         json.put("code", 400);
         try {
-            String userName = user.getUserName();
-            int i = userService.deleteUser(userName);
-            if (i >0){
+            String userIds = jsonObject.getString("userids");
+            List<String> list = Arrays.asList(userIds.split(","));
+            if (list.size() > 0){
+                for (String id : list){
+                    userService.deleteUser(id);
+                }
+            }
                 json.put("msg", "删除用户成功");
                 json.put("code", 200);
                 return json;
-            }
         }catch (Exception e){
             logger.error(e.getMessage(), e);
             json.put("msg", e.getMessage());
@@ -126,6 +130,10 @@ public class UserController {
         return json;
     }
 
-
+    public static void main(String[] args) {
+        String input = "11111";
+        List<String> list = Arrays.asList(input.split(","));
+        System.out.println(list);
+    }
 
 }

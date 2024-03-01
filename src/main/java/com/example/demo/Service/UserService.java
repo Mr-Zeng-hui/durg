@@ -16,7 +16,7 @@ public interface UserService {
 
     public int resetPassword(User user);
 
-    public int deleteUser(String userName);
+    public int deleteUser(String id);
 
     public List<User> selectAll(JSONObject jsonObject);
 }

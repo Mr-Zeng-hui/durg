@@ -38,8 +38,8 @@ public class UserServiceImpl implements UserService {
         return i;
     }
 
-    public int deleteUser(String userName) {
-        int deleteUser = userMapper.deleteUser(userName);
+    public int deleteUser(String id) {
+        int deleteUser = userMapper.deleteUser(id);
         return deleteUser;
     }
 
