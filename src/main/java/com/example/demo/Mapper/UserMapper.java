@@ -51,7 +51,6 @@ public interface UserMapper {
     @Select("SELECT * FROM durg_user where 1 =1  ")
     List<User> selectAll(String param);
 
-    @Select("SELECT * FROM durg_user where 1 =1  #{param}")
-    List<User> select(@Param("param")String param);
+
 
 }
