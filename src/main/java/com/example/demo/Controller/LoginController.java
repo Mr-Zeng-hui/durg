@@ -6,6 +6,7 @@ import com.example.demo.Model.User;
 import com.example.demo.Service.EmailSendService;
 import com.example.demo.Service.UserService;
 import com.example.demo.util.CacheUtil;
+import com.example.demo.util.MD5Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
@@ -39,7 +41,7 @@ public class LoginController {
     @PostMapping("/login")
     public JSONObject login(@RequestBody JSONObject jsonInfo,
                             HttpSession session,
-                            RedirectAttributes attributes, HttpServletRequest request) {
+                            RedirectAttributes attributes, HttpServletResponse request) {
         String username = jsonInfo.getString("username");
         String password = jsonInfo.getString("password");
         String verifyCode = jsonInfo.getString("verifyCode");
@@ -77,11 +79,16 @@ public class LoginController {
                     int i = userService.insertUser(user);
                     logger.info("insertUser:" + i);
                 }
-                String token = user.getUserName() + "," + user.getPassword();
-                request.setAttribute("token", token);
+                String token = MD5Utils.code(user.getUserName() + "," + user.getPassword());
+                request.addHeader("token", token);
                 CacheUtil.put(token, user, 120);
                 user.setPassword(null);
                 session.setAttribute("user", user);
+                json.put("userName", user.getUserName());
+                json.put("userType", user.getType());
+                request.addHeader("user", user.toString());
+                json.put("user",user);
+                json.put("token",token);
                 json.put("msg", "登录成功");
                 json.put("code", 200);
                 return json;
@@ -89,11 +96,15 @@ public class LoginController {
                 User user = userService.checkUser(username, password);
                 logger.info("user:" + user);
                 if (user != null) {
-                    String token = user.getUserName() + "," + user.getPassword();
-                    request.setAttribute("token", token);
+                    String token = MD5Utils.code(user.getUserName() + "," + user.getPassword());
+                    request.addHeader("token", token);
                     CacheUtil.put(token, user, 120);
                     user.setPassword(null);
+                    request.addHeader("user", user.toString());
                     session.setAttribute("user", user);
+                    json.put("userName", user.getUserName());
+                    json.put("user",user);
+                    json.put("token",token);
                     json.put("msg", "登录成功");
                     json.put("code", 200);
                     return json;

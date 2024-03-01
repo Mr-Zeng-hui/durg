@@ -105,7 +105,12 @@
 			contentType: 'application/json',
 			success:function(result){
 				if (result.code == 200){
+					debugger;
 					layer.msg('登录成功！', {icon: 1,time: 2000});
+					localStorage.setItem("durg_user", JSON.stringify(result.user));
+					localStorage.setItem("durg_token", result.token);
+					localStorage.setItem("durg_userName", result.userName);
+					localStorage.setItem("durg_userType", result.userType);
 					location.href="/index";
 				}else{
 					layer.msg(result.msg, {icon: 2,time: 2000});
