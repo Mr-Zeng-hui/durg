@@ -1,5 +1,6 @@
 package com.example.demo.Service;
 
+
 import cn.zeng.email.config.MailConfig;
 import cn.zeng.email.constant.EmailContentTypeEnum;
 import cn.zeng.email.constant.SmtpHostEnum;
@@ -8,7 +9,6 @@ import cn.zeng.email.core.MiniEmailFactoryBuilder;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.Mapper.EmailMapper;
 import com.example.demo.Model.Email;
-import com.example.demo.Model.User;
 import com.example.demo.util.CacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
