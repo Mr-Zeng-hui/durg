@@ -55,15 +55,7 @@ public class LoginController {
             if (StringUtils.isNotBlank(verifyCode)) {
                 String cachedValue = CacheUtil.get("CODE_" + username).toString();
                 logger.info("verifyCode:" + verifyCode + "cachedValue:" + cachedValue);
-                User user = userService.checkUserEmail(username);
-                if (user == null) {
 
-                    logger.info("当前用户没有注册");
-                    addCachedValue(username);
-                    json.put("msg", "当前用户没有注册");
-                    json.put("code", 400);
-                    return json;
-                }
                 if (!StringUtils.equals(verifyCode, cachedValue)) {
 
                     addCachedValue(username);
@@ -71,6 +63,18 @@ public class LoginController {
                     json.put("msg", "验证码错误");
                     json.put("code", 400);
                     return json;
+                }
+                User user = userService.checkUserEmail(username);
+
+                if (user == null) {
+                    user.setUserName(username);
+                    user.setEmail(username);
+                    user.setPassword("e10adc3949ba59abbe56e057f20f883e");
+                    user.setId(UUID.randomUUID().toString());
+                    user.setType("0");
+                    user.setState("1");
+                    int i = userService.insertUser(user);
+                    logger.info("insertUser:" + i);
                 }
                 String token = user.getUserName() + "," + user.getPassword();
                 request.setAttribute("token", token);
@@ -119,7 +123,7 @@ public class LoginController {
             session.removeAttribute("user");
             json.put("msg", "退出成功");
             json.put("code", 200);
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             json.put("msg", "退出失败");
             json.put("code", 400);
