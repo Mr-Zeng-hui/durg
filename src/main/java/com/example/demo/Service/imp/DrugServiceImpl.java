@@ -144,9 +144,20 @@ public class DrugServiceImpl implements IDrugSerivce {
         // 可以指定自定义的日期格式
         String customFormat = DateUtil.format(DateUtil.date(), "yyyy-MM-dd HH:mm:ss");
         //还要插入日志
-        logDao.insertLog(String.valueOf(UUID.fastUUID()), id, name, "system", "system", currentDateTime, "delDurg");
+        logDao.insertLog(String.valueOf(UUID.fastUUID()), id, name, "system", "system", customFormat, "delDurg");
 
         return drugDao.delDrugName(id);
+    }
+
+    @Override
+    public Drug getDurgById(String id) {
+        Drug drug = drugDao.getDurgById(id);
+        String currentDateTime = DateUtil.now();
+        // 可以指定自定义的日期格式
+        String customFormat = DateUtil.format(DateUtil.date(), "yyyy-MM-dd HH:mm:ss");
+        //还要插入日志
+        logDao.insertLog(String.valueOf(UUID.fastUUID()), id, drug.getName(), "system", "system", customFormat, "lookDurg");
+        return drug;
     }
 
 //    public static void main(String[] args) {
