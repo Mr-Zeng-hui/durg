@@ -33,10 +33,10 @@ public class UserController {
         return "addUser";
     }
 
-    @GetMapping("/userList")
+    /*@GetMapping("/userList")
     public String userList(){
         return "addUser";
-    }
+    }*/
 
 
     @GetMapping("/add")

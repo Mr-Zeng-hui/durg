@@ -27,13 +27,13 @@
           <a class="" href="javascript:;">药品管理</a>
           <dl class="layui-nav-child">
             <dd>
-              <a href="javascript:;" data-url="/drugInfo/durglist">药品查询</a>
+              <a href="javascript:;" data-url="/durglist">药品查询</a>
             </dd>
             <dd>
-              <a href="javascript:;" data-url="/login">药品管理</a>
+              <a href="javascript:;" data-url="">药品管理</a>
             </dd>
             <dd>
-              <a href="javascript:;" data-url="/login">浏览记录</a>
+              <a href="javascript:;" data-url="/loglist">浏览记录</a>
             </dd>
           </dl>
         </li>
@@ -41,10 +41,10 @@
           <a href="javascript:;">系统配置</a>
           <dl class="layui-nav-child">
             <dd>
-              <a href="javascript:;" data-url="server/server-config.jsp">系统参数</a>
+              <a href="javascript:;" data-url="/config">系统参数</a>
             </dd>
             <dd>
-              <a href="javascript:;" data-url="">用户管理</a>
+              <a href="javascript:;" data-url="/user">用户管理</a>
             </dd>
           </dl>
         </li>
@@ -74,20 +74,12 @@
         var t=$(this);
         var d = new Date();
         var url=t.data("url");
-        if(url&&url.indexOf("?")>-1){
-          url=url+"&t="+d.getTime();
-        }else{
-          url=url+"?t="+d.getTime();
-        }
         //window.location.hash=url;
-      });
-      var url=window.location.hash;
-      if(url){
-        url=url.substr(1);
         loadPage(url);
-      }else{
+      });
 
-      }
+      loadPage('/durglist');
+
 
       window.addEventListener('hashchange',function(e) {
                 var url=window.location.hash;
