@@ -34,4 +34,8 @@ public interface DrugDao {
 
     @Delete({"Delete from  drug_set where id =  #{id}"})
     boolean delDrugName(@Param("id") String id);
+
+    @Update({"UPDATE drug_set SET bak=#{bak}, instructions=#{instructions}, time=#{time}, price1=#{price1}, price2=#{price2}, img1=#{img1}, img2=#{img2} WHERE id=#{id}"})
+    boolean updateDrug(@Param("id") String id, @Param("bak") String bak,  @Param("time") String time,  @Param("instructions") String instructions,  @Param("price1") String price1,  @Param("price2") String price2,  @Param("img1") String img1,  @Param("img2") String img2);
+
 }

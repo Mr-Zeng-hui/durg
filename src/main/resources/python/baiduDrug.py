@@ -4,14 +4,13 @@ import json
 import re
 from urllib.parse import quote
 from bs4 import BeautifulSoup
-import sqlite3
-import os
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-dbUrl = os.path.join(script_dir, '..', 'db/myDb')
-print(dbUrl)
+
+
 # 百度健康
-def get_drug_info(keyword, id):
+def get_drug_info(keyword, filename):
+
+    res_json = {}
 
     # 测试
     keyword = remove_brackets(keyword)
@@ -66,7 +65,7 @@ def get_drug_info(keyword, id):
             # print(result_sentence)
 
              # 创建一个字典用于存储信息
-            drug_info = {
+            res_json = {
                 "commonName": commonName,
                 "price": price,
                 "indication": indication,
@@ -75,29 +74,7 @@ def get_drug_info(keyword, id):
             }
 
 
-
-            # 连接到 SQLite 数据库
-            conn = sqlite3.connect(dbUrl)
-            conn.isolation_level = None  # 设置为默认值
-
-            # 创建一个游标对象
-            cursor = conn.cursor()
-            # 执行更新操作
-            cursor.execute("UPDATE drug_set SET bigname = ?, bak = ?, instructions = ?, price1 = ?, img1 = ? WHERE id = ?", (commonName, indication, result_sentence, price, headerImages, id))
-            # 提交事务
-            conn.commit()
-            # 关闭连接
-            conn.close()
-            ## 将字典转换为 JSON 格式并保存到文件
-            #with open('drug_info.json', 'w', encoding='utf-8') as json_file:
-              #  json.dump(drug_info, json_file, ensure_ascii=False, indent=4)
-
-
-# 阿里大药房
-def get_drug_info2(keyword, id):
     keyword = remove_brackets(keyword)
-    print(keyword)
-    # keyword = '布洛芬缓释胶囊'
     keyword = quote(keyword, encoding='gbk')  # 使用 gbk 编码
     url = 'https://maiyao.liangxinyao.com/i/asynSearch.htm?_ksTS=1709092049134_116&callback=jsonp117&mid=w-14644508915-0&wid=14644508915&path=/search.htm&q={}&type=p&search=y&newHeader_b=s_from&searcy_type=item&from=liangxinyao.shop.pc_1_placeholder&spm=a1z10.3-b-s.a2227oh.d101'
     headers = {
@@ -130,25 +107,22 @@ def get_drug_info2(keyword, id):
         print(f"商品价格: {product_price}")
         print(f"商品图片URL: {product_image_url}")
 
-        # 连接到 SQLite 数据库
-        conn = sqlite3.connect(dbUrl)
-        # 创建一个游标对象
-        cursor = conn.cursor()
-        # 执行更新操作
-        cursor.execute("UPDATE drug_set SET price2 = ?, img2 = ? WHERE id = ?", (product_price, product_image_url, id))
-        # 提交事务
-        conn.commit()
-        # 关闭连接
-        conn.close()
+        res_json['price2'] = product_price
+        res_json['img2'] = product_image_url
+
     else:
         print("未找到HTML内容。")
+
+    # 将字典转换为 JSON 格式并保存到文件
+    print(filename)
+    with open(filename, 'w', encoding='utf-8') as json_file:
+        json.dump(res_json, json_file, ensure_ascii=False, indent=4)
+
 
 def remove_brackets(text):
     # 使用正则表达式匹配括号及其内部内容，并替换为空字符串
     cleaned_text = re.sub(r'\([^)]*\)', '', text)
     return cleaned_text.strip()  # 去掉首尾空格
-
-
 
 if __name__ == "__main__":
     # 从命令行获取关键字参数
@@ -157,8 +131,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     keyword = sys.argv[1]
-    id = sys.argv[2]
+    filename = sys.argv[2]
 
-    get_drug_info(keyword, id)
-    get_drug_info2(keyword, id)
+    get_drug_info(keyword, filename)
 
