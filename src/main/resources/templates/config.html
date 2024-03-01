@@ -22,7 +22,8 @@
     </style>
 </head>
 <body>
-<form class="layui-form" action="" style="margin-top: 5%">
+<iframe width=0 height=0 frameborder=0 id="myiframe" name="myiframe"></iframe>
+<form class="layui-form" onsubmit="return false;" style="margin-top: 5%" target="myiframe">
     <div class="layui-form-item">
         <label class="layui-form-label">邮箱用户</label>
         <div class="layui-input-block" style="width: 60%">
@@ -62,25 +63,60 @@
         </div>
     </div>
     <div class="layui-form-item" style="align-content: center;margin-left: 50%;margin-top: 10%;">
-
-            <button class="layui-btn" lay-submit lay-filter="formDemo" style="">保存</button>
-           <!-- <button type="reset" class="layui-btn layui-btn-primary">重置</button>-->
-
+            <button class="layui-btn"  lay-submit lay-filter="formDemo" id="sub" onclick="submit()" style="">保存</button>
     </div>
 </form>
 
 <script>
-    //Demo
-    layui.use('form', function(){
-        var form = layui.form;
+    $(function(){
+        $.ajax({
+            url:'/email/getEmailList',
+            data:JSON.stringify({}),
+            type: 'POST',
+            dataType:'json',
+            contentType: 'application/json',
+            success:function(result){
+                debugger;
+                if (result.code == 200){
+                    var data = result.data;
+                    $("#userName").val(data.userName);
+                    $("#email").val(data.email);
+                    $("#emailPwd").val(data.emailPwd);
+                    $("#emailType").val(data.emailType);
+                    $("#template").val(data.template);
 
-        //提交
-        form.on('submit(formDemo)', function(data){
-            layer.msg(JSON.stringify(data.field));
-            debugger;
-            return false;
+                    layui.use('form', function(){
+                        var form = layui.form;
+                        form.render();
+                    });
+                }
+            }
         });
     });
+
+    layui.use('form', function(){
+        var form = layui.form;
+        //提交
+        form.on('submit(formDemo)', function(data){
+            $.ajax({
+                url: '/email/updateEmail',
+                data: JSON.stringify(data.field),
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (result) {
+                    debugger;
+                    if (result.code == 200) {
+                        layer.msg('保存成功！', {icon: 1, time: 2000});
+                    } else {
+                        layer.msg(result.msg, {icon: 2, time: 2000});
+                    }
+                }
+            });
+        });
+
+    });
+
 </script>
 
 
