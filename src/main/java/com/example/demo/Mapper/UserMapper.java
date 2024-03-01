@@ -36,8 +36,11 @@ public interface UserMapper {
             ", #{user.securityIssues}, #{user.errorCount}, #{user.answer})")
     int insert(@Param("user") User user);
 
-    @Update("UPDATE durg_user SET value=#{value} WHERE userNmae=#{userName}")
-    int resetPassword(User user);
+//    @Update("UPDATE durg_user SET value=#{value} WHERE userNmae=#{userName}")
+//    int resetPassword(User user);
+
+    @Update("UPDATE durg_user SET password = #{user.password} WHERE email = #{user.email}")
+    int resetPassword(@Param("user") User user);
 
 
     // 根据 ID 删除
