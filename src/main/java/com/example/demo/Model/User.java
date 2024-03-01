@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class User {
     //登录账号（邮箱）、用户名、密码、是否启用、是否管理员、密保问题、密保答案、用户ID
-    private Long id;
+    private String id;
     private String userName;
     private String password;
     private String email;
