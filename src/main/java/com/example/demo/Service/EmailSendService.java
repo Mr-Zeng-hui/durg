@@ -58,7 +58,8 @@ public class EmailSendService {
             if (email == null) {
                 email = mapper.select(1);
             }
-            content = email.getTemplate().replace("[CODE]", getRandomCode());
+            String randomCode = getRandomCode();
+            content = email.getTemplate().replace("[CODE]", randomCode);
             emailUser = email.getEmail();
             emailPwd = email.getEmailPwd();
             emailType= Integer.valueOf(email.getEmailType());
@@ -73,7 +74,7 @@ public class EmailSendService {
                     .send(to.split(","), "验证码", EmailContentTypeEnum.HTML, content);
             logger.info("send success to = " + sendSuccessToList);
             //存入缓存 时间为5分钟
-            CacheUtil.put("CODE_" + to, content, 5);
+            CacheUtil.put("CODE_" + to, randomCode, 5);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             jsonObject.put("code", 400);
