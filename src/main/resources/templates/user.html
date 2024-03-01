@@ -51,30 +51,23 @@
             url:'/getUserList',
             cols: [
                 [ //标题栏
-                {field: 'id', title: '登录账号'},
-                {field: 'username', title: '用户名'},
-                {field: 'sex', title: '是否启用'},
-                {field: 'sign', title: '密保问题', minWidth: 160},
+                    {type: 'checkbox'},
+                {field: 'email', title: '登录账号'},
+                {field: 'userName', title: '用户名'},
+                {field: 'securityIssues', title: '密保问题', minWidth: 160},
                 {
                     title: '操作',
                     templet:function(row){
                         var html='';
                         html += '<div>'
                             +'<span href="javascript:void(0)" class="layui-btn layui-btn-xs" onclick="">重置密码</span>'
-                            +'<span href="javascript:void(0)" class="layui-btn layui-btn-xs  layui-btn-danger" onclick=""></span>'
                             +'</div>';
                         return  html;
                     }
                 }
             ]
             ],
-
-            //skin: 'line', // 表格风格
-            //even: true,
-            page: true, // 是否显示分页
-            limits: [5, 10, 15],
             height:700,
-            limit: 5 // 每页默认显示的数量
         });
     });
 

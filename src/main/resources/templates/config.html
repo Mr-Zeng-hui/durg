@@ -107,7 +107,7 @@
                 success: function (result) {
                     debugger;
                     if (result.code == 200) {
-                        layer.msg('保存成功！', {icon: 1, time: 2000});
+                        layer.msg(result.msg, {icon: 1, time: 2000});
                     } else {
                         layer.msg(result.msg, {icon: 2, time: 2000});
                     }
