@@ -20,7 +20,7 @@ public interface UserMapper {
      */
 //    User queryByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
 
-    @Select("SELECT * FROM durg_user WHERE userName=#{username} AND password=#{password} and state ='1'")
+    @Select("SELECT * FROM durg_user WHERE email=#{username} AND password=#{password} and state ='1'")
     User queryByUsernameAndPassword( String username,  String password);
 
 
