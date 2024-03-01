@@ -119,4 +119,11 @@ public class EmailSendService {
     }
 
 
+    public Email selectAllEmail() {
+        Email email = mapper.select(1);
+
+        return email;
+    }
+
+
 }

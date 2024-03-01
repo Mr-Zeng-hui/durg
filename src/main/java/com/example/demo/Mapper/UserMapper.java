@@ -28,8 +28,13 @@ public interface UserMapper {
     User checkUserEmail( String emailAccount);
 
 
-    @Insert("INSERT INTO durg_user(key, value) VALUES(#{key}, #{value})")
-    int insert(User user);
+//    @Insert("INSERT INTO durg_user(key, value) VALUES(#{key}, #{value})")
+//    int insert(User user);
+
+    @Insert("INSERT INTO durg_user(id,userName,password,email,type,state,securityIssues,errorCount, answer) " +
+            "VALUES(#{user.id}, #{user.userName}, #{user.password}, #{user.email}, #{user.type}, #{user.state}" +
+            ", #{user.securityIssues}, #{user.errorCount}, #{user.answer})")
+    int insert(@Param("user") User user);
 
     @Update("UPDATE durg_user SET value=#{value} WHERE userNmae=#{userName}")
     int resetPassword(User user);

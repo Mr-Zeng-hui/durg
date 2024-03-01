@@ -20,4 +20,5 @@ public interface EmailMapper {
     @Update("UPDATE durg_config SET value=#{value} WHERE id=#{id}")
     int updateValue(Email email);
 
+
 }

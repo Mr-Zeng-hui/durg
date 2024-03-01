@@ -38,4 +38,22 @@ public class EmailSendController {
         return result;
     }
 
+    @ResponseBody
+    @RequestMapping("/getEmailList") //短信信息修改
+    public JSONObject getEmailList(HttpServletRequest request){
+        JSONObject jsonObject =new JSONObject();
+        try {
+            Email email = emailSendService.selectAllEmail();
+            jsonObject.put("msg","查询成功");
+            jsonObject.put("data",email);
+            jsonObject.put("code",200);
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+            jsonObject.put("msg","查询失败");
+            jsonObject.put("code",400);
+        }
+
+        return jsonObject;
+    }
+
 }
