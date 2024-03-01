@@ -1,5 +1,8 @@
 package com.example.demo.interceptor;
 
+import com.example.demo.Model.User;
+import com.example.demo.util.CacheUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -13,10 +16,21 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.print("请求到达Controller前\t");
-        if (request.getSession().getAttribute("user") == null){
+        Object token = request.getAttribute("token");
+
+        if (token == null){
             response.sendRedirect("/admin");
             return false;
         }
+        User user = (User)CacheUtil.get(token.toString());
+        if (StringUtils.isBlank(user.getUserName())){
+            response.sendRedirect("/admin");
+            return false;
+        }
+//        if (request.getSession().getAttribute("user") == null){
+//            response.sendRedirect("/admin");
+//            return false;
+//        }
         return true;
     }
 
