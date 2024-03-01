@@ -49,13 +49,9 @@
 			color: "#E6E6E6",
 			backgroundImage: "static/img/bg.jpg"
 		});
-
-		//登录链接测试，使用时可删除
-		$(".submit_btn").click(function(){
-			location.href="index.html";
-		});
 	});
 
+	var flag = true;
 	sendSms = function(){
 		debugger;
 		var email = $("#email_acc").val();
@@ -64,28 +60,22 @@
 			return;
 		}
 		$.ajax({
-			dataType:'application/json',
 			url:'/email/send',
 			data:JSON.stringify({"email_acc":email}),
 			type: 'POST',
+			dataType:'json',
 			contentType: 'application/json',
 			success:function(result){
 				if (result.code == 200){
+					flag = false;
 					layer.msg('发送成功！', {icon: 1,time: 2000});
-					$("#verifyCode").addcss("layui-btn-disabled");
+					$("#verifyCode").addClass("layui-btn-disabled");
 					setTimeout(function(){
-						$("#verifyCode").removecss("layui-btn-disabled");
+						$("#verifyCode").removeClass("layui-btn-disabled");
 					},30*1000);
 				}else{
-					layer.msg(result.msg, {icon: 1,time: 2000});
+					layer.msg(result.msg, {icon: 2,time: 2000});
 				}
-
-				//$(".layui-main").html(result);
-			},beforeSend:function(){
-			//	$(".layui-main").empty();
-			//	layer.load(1);
-			},complete:function(){
-				//layer.closeAll('loading');
 			}
 		});
 
@@ -98,16 +88,21 @@
 			return;
 		}
 		var password = $("#email_pass").val();
-		if (!password){
+		if (flag){
 			layer.msg('请输入密码！', {icon: 2,time: 1000});
 			return;
 		}
-		var verifyCode = $("#verifyCode").val();
+		var code = $("#code").val();
+		if (!password && !code){
+			layer.msg('请输入密码或者验证码！', {icon: 2,time: 1000});
+			return;
+		}
 		$.ajax({
-			contentType:'application/json',
 			url:'/admin/login',
-			data:{username:email,password:password,verifyCode:verifyCode},
-			type:'post',
+			data:JSON.stringify({username:email,password:password,verifyCode:code}),
+			type: 'POST',
+			dataType:'json',
+			contentType: 'application/json',
 			success:function(result){
 				if (result.code == 200){
 					layer.msg('登录成功！', {icon: 1,time: 2000});
