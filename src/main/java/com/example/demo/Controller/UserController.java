@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -109,14 +111,14 @@ public class UserController {
 
     @GetMapping("/getUserList")
     @ResponseBody
-    public JSONObject getUserList(@RequestBody JSONObject jsonObject){
+    public JSONObject getUserList(@RequestParam Map jsonObject){
         JSONObject json = new JSONObject();
         json.put("msg", "查询失败");
         json.put("code", 400);
         try {
             List<User> users = userService.selectAll(jsonObject);
             if (users != null){
-                json.put("msg", "删除用户成功");
+                json.put("msg", "查询用户成功");
                 json.put("code", 200);
                 json.put("data", users);
                 return json;

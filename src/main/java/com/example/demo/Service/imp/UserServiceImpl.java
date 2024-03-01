@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -43,20 +44,25 @@ public class UserServiceImpl implements UserService {
         return deleteUser;
     }
 
-    public  List<User>  selectAll(JSONObject jsonObject) {
+    public  List<User>  selectAll(Map jsonObject) {
         StringBuilder  builder = new StringBuilder();
-        if (jsonObject.getString("email") != null){
-            builder.append(" and email = "+jsonObject.getString("email"));
-        }else if (jsonObject.getString("userName") != null){
-        builder.append(" and userName = "+jsonObject.getString("userName"));
-        } else if (jsonObject.getString("type")!= null) {
-            builder.append(" and type = "+jsonObject.getString("type"));
-        } else if (jsonObject.getString("state")!= null) {
-            builder.append(" and state = "+jsonObject.getString("state"));
-        } else if (jsonObject.getString("securityIssues")!= null) {
-            builder.append(" and securityIssues like % "+jsonObject.getString("securityIssues")+"%");
+        if (jsonObject.get("email") != null){
+            builder.append(" and email = "+jsonObject.get("email"));
+        }else if (jsonObject.get("userName") != null){
+        builder.append(" and userName = "+jsonObject.get("userName"));
+        } else if (jsonObject.get("type")!= null) {
+            builder.append(" and type = "+jsonObject.get("type"));
+        } else if (jsonObject.get("state")!= null) {
+            builder.append(" and state = "+jsonObject.get("state"));
+        } else if (jsonObject.get("securityIssues")!= null) {
+            builder.append(" and securityIssues like % "+jsonObject.get("securityIssues")+"%");
         }
-        List<User> users = userMapper.selectAll(builder.toString());
+        List<User> users ;
+        if (builder.length() > 0){
+            users = userMapper.selectAll(builder.toString());
+        }else {
+            users = userMapper.selectAll("");
+        }
         return users;
     }
 

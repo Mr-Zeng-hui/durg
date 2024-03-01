@@ -6,6 +6,7 @@ import com.example.demo.Model.User;
 import org.apache.catalina.LifecycleState;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
 
@@ -18,5 +19,5 @@ public interface UserService {
 
     public int deleteUser(String id);
 
-    public List<User> selectAll(JSONObject jsonObject);
+    public List<User> selectAll(Map jsonObject);
 }
