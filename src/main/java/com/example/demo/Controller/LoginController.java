@@ -67,6 +67,7 @@ public class LoginController {
                 User user = userService.checkUserEmail(username);
 
                 if (user == null) {
+                    user =new User();
                     user.setUserName(username);
                     user.setEmail(username);
                     user.setPassword("e10adc3949ba59abbe56e057f20f883e");
