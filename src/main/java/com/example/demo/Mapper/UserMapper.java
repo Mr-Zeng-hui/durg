@@ -36,8 +36,8 @@ public interface UserMapper {
 
 
     // 根据 ID 删除
-    @Delete("DELETE FROM durg_user WHERE userName=#{userName}")
-    int deleteUser(String userName);
+    @Delete("DELETE FROM durg_user WHERE id = #{id}")
+    int deleteUser(String id);
 
     // 查询全部
     @Select("SELECT * FROM durg_user where 1 =1 #{param} ")

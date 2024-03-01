@@ -35,71 +35,97 @@ public class LoginController {
     }
 
 
+    @ResponseBody
     @PostMapping("/login")
-    public String login(@RequestBody JSONObject jsonInfo,
-                        HttpSession session,
-                        RedirectAttributes attributes, HttpServletRequest request) {
+    public JSONObject login(@RequestBody JSONObject jsonInfo,
+                            HttpSession session,
+                            RedirectAttributes attributes, HttpServletRequest request) {
         String username = jsonInfo.getString("username");
         String password = jsonInfo.getString("password");
         String verifyCode = jsonInfo.getString("verifyCode");
+        JSONObject json = new JSONObject();
         try {
             if (verifyCount(username)) {
-                attributes.addFlashAttribute("msg", "登录错误超过3次,等待1分钟后重试");
+
                 logger.info("登录错误超过3次,等待1分钟后重试");
-                return "login";
+                json.put("msg", "登录错误超过3次,等待1分钟后重试");
+                json.put("code", 400);
+                return json;
             }
             if (StringUtils.isNotBlank(verifyCode)) {
                 String cachedValue = CacheUtil.get("CODE_" + username).toString();
                 logger.info("verifyCode:" + verifyCode + "cachedValue:" + cachedValue);
                 User user = userService.checkUserEmail(username);
                 if (user == null) {
-                    attributes.addFlashAttribute("msg", "当前用户没有注册");
+
                     logger.info("当前用户没有注册");
                     addCachedValue(username);
-                    return "login";
+                    json.put("msg", "当前用户没有注册");
+                    json.put("code", 400);
+                    return json;
                 }
                 if (!StringUtils.equals(verifyCode, cachedValue)) {
-                    attributes.addFlashAttribute("msg", "验证码错误");
+
                     addCachedValue(username);
                     logger.info("验证码错误");
-                    return "login";
+                    json.put("msg", "验证码错误");
+                    json.put("code", 400);
+                    return json;
                 }
                 String token = user.getUserName() + "," + user.getPassword();
                 request.setAttribute("token", token);
-                CacheUtil.put(token,user,120);
+                CacheUtil.put(token, user, 120);
                 user.setPassword(null);
                 session.setAttribute("user", user);
-                return "index";
+                json.put("msg", "登录成功");
+                json.put("code", 200);
+                return json;
             } else {
                 User user = userService.checkUser(username, password);
                 logger.info("user:" + user);
                 if (user != null) {
                     String token = user.getUserName() + "," + user.getPassword();
                     request.setAttribute("token", token);
-                    CacheUtil.put(token,user,120);
+                    CacheUtil.put(token, user, 120);
                     user.setPassword(null);
                     session.setAttribute("user", user);
-                    return "index";
+                    json.put("msg", "登录成功");
+                    json.put("code", 200);
+                    return json;
                 } else {
-                    attributes.addFlashAttribute("msg", "账户密码错误");
+
                     addCachedValue(username);
                     logger.info("账户密码错误");
-                    return "login";
+                    json.put("msg", "账户密码错误");
+                    json.put("code", 400);
+                    return json;
+
                 }
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
 
-        return "login";
+        return json;
     }
 
+    @ResponseBody
     @GetMapping("/logout")
-    public String logout(HttpSession session, HttpServletRequest request) {
-        Object token = request.getAttribute("token");
-        CacheUtil.remove(token.toString());
-        session.removeAttribute("user");
-        return "redirect:/admin";
+    public JSONObject logout(HttpSession session, HttpServletRequest request) {
+        JSONObject json = new JSONObject();
+        try {
+            Object token = request.getAttribute("token");
+            CacheUtil.remove(token.toString());
+            session.removeAttribute("user");
+            json.put("msg", "退出成功");
+            json.put("code", 200);
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+            json.put("msg", "退出失败");
+            json.put("code", 400);
+        }
+
+        return json;
     }
 
     public static String addCachedValue(String value) {
@@ -139,8 +165,8 @@ public class LoginController {
                 json.put("code", 200);
                 return json;
             }
-        }catch (Exception e){
-            logger.error(e.getMessage(),e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             json.put("msg", e.getMessage());
             json.put("code", 400);
         }
@@ -175,8 +201,8 @@ public class LoginController {
                 json.put("code", 200);
                 return json;
             }
-        }catch (Exception e){
-            logger.error(e.getMessage(),e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             json.put("msg", e.getMessage());
             json.put("code", 400);
         }
