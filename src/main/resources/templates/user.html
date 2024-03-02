@@ -44,10 +44,13 @@
 
 
 <script>
+
+     var inst
+
     layui.use('table', function(){
         var table = layui.table;
         // 已知数据渲染
-        var inst = table.render({
+         inst = table.render({
             elem: '#list',
             url:'/getUserList',
             cols: [
@@ -77,6 +80,9 @@
         });
     });
 
+     reloadData =function (){
+         inst.reload();
+     }
     /**
      * 添加用户
      */
@@ -85,7 +91,11 @@
             type: 2,
             title: '添加用户',
             area: ['800px', '600px'],
-            content: '/addUser'
+            content: '/addUser',
+            end:function(){
+                inst.reload();//刷新关闭后的页面
+
+            }
         });
     }
 
