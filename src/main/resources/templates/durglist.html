@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Demo</title>
     <link href="https://www.layuicdn.com/layui/css/layui.css" rel="stylesheet">
-    <script src="https://www.layuicdn.com/layui/layui.js"></script>
+<!--    <script src="https://www.layuicdn.com/layui/layui.js"></script>-->
+    <script src="layui/layui.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
     <style>
@@ -90,7 +92,7 @@
                         }},
 
                     {field: 'price1', title: '百度健康价格', width: 150},
-                    {field: 'img2', title: '阿里大药房药品图片', width: 200, templet: function(d){
+                    {field: 'img2', title: '阿里大药房药品图片', width: 200, sort:true, templet: function(d){
                             if (d.img2) {
                                 return '<img src="'+ d.img2 +'" class="layui-table-img" onclick="enlargeImage(\'' + d.img2 + '\')"/>';
                             } else {
@@ -98,7 +100,7 @@
                             }
                         }},
 
-                    {field: 'price2', title: '阿里大药房价格', width: 150},
+                    {field: 'price2', title: '阿里大药房价格', width: 150, sort:true},
                     {field: 'instructions', title: '说明书'},
                     {field:'OPER', title: '操作',fixed:'right',align:'center',width: 220, templet : function(row){
                             var temp="";
@@ -177,6 +179,7 @@
         // 调用 table.reload 方法刷新表格
         // layui.table.reload('list'); // test 为表格 lay-filter 的值，需要与 table.render 中的 lay-filter 一致
 
+        console.log("刷新表格1")
         // 重新设置表格的 URL
         layui.table.reload('list', {
             url: '/durgData?bak=' +$("#bak").val(),
@@ -202,15 +205,19 @@
     }
 
     function runPython(id, keyword) {
-        // 在请求开始时显示加载提示
-        var loadingIndex = layer.load(2, {time: 10 * 1000}); // 10秒超时时间
+        // 显示加载中的弹窗
+        var loadingMsgIndex = layer.msg('数据加载中，请稍候', {
+            icon: 16, // 16代表加载图标
+            shade: 0.5, // 遮罩透明度
+            time: 0 // 0代表不自动关闭，需要手动调用 layer.close(loadingMsgIndex) 来关闭
+        });
 
         $.ajax({
             url: '/crawlingData?id=' + id + '&keyword=' + keyword,
             type: 'get',
             success: function (result) {
-                // 请求成功时隐藏加载提示
-                layer.close(loadingIndex);
+                // 请求成功时关闭加载中弹窗
+                layer.close(loadingMsgIndex);
 
                 // 显示爬取成功消息
                 layer.msg("爬取成功", {icon: 1, time: 5000});
@@ -219,14 +226,15 @@
                 location.reload();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                // 请求失败时隐藏加载提示
-                layer.close(loadingIndex);
+                // 请求失败时关闭加载中弹窗
+                layer.close(loadingMsgIndex);
 
                 // 显示网络故障提示
                 layer.alert("出现网络故障，请稍后再试!", {icon: 7, time: 15000});
             }
         });
     }
+
 
     function del(id, name) {
         layer.confirm('确认删除吗？', {

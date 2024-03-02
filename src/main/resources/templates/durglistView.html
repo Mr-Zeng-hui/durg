@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>药品查询</title>
     <link href="https://www.layuicdn.com/layui/css/layui.css" rel="stylesheet">
-    <script src="https://www.layuicdn.com/layui/layui.js"></script>
+<!--    <script src="https://www.layuicdn.com/layui/layui.js"></script>-->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="layui/layui.js"></script>
 
     <style>
         .layui-table-img {
@@ -24,7 +25,7 @@
     </style>
 </head>
 <body>
-<form autocomplete="off" onsubmit="return false;" class="form-inline" id="batchMgrForm">
+<form autocomplete="off" onsubmit="return false;" class="form-inline" id="batchMgrForm2">
     <div class="layui-card" style="margin-bottom: 0px;">
         <div class="layui-card-body">
         </div>
@@ -41,7 +42,7 @@
                     </div>
                     <button type="button" class="layui-btn" style="margin-left: 10px;" onclick="query()">搜索</button>
                   </div>
-                <table class="layui-hide" id="list" style="line-height: 80px;"></table>
+                <table class="layui-hide" id="list2" style="line-height: 80px;"></table>
             </div>
         </div>
     </div>
@@ -54,8 +55,8 @@
     layui.use('table', function(){
         var table = layui.table;
         // 已知数据渲染
-        var inst = table.render({
-            elem: '#list',
+        var inst2 = table.render({
+            elem: '#list2',
             cols: [
                 [ //标题栏
                     {field: 'id', title: 'ID', width: 150, style: 'height: 100px; line-height: 100px;'},
@@ -128,19 +129,19 @@
 
 
     // 模拟一个接口调用成功后刷新表格的操作
-    function refreshTable() {
+    function refreshTable2() {
         // 在实际场景中，你需要调用你的接口，然后在接口回调中执行下面的代码
         // 调用 table.reload 方法刷新表格
         // layui.table.reload('list'); // test 为表格 lay-filter 的值，需要与 table.render 中的 lay-filter 一致
 
         // 重新设置表格的 URL
-        layui.table.reload('list', {
+        layui.table.reload('list2', {
             url: '/durgData?bak=' +$("#bak").val(),
         });
     }
 
     function query() {
-        refreshTable();
+        refreshTable2();
     }
 
     function enlargeImage(imgUrl) {
