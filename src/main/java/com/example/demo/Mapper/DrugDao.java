@@ -50,7 +50,7 @@ public interface DrugDao {
     Drug getDurgById(@Param("id") String id);
 
 
-    @Select({"SELECT * FROM drug_set where price1 is null"})
+    @Select({"SELECT * FROM drug_set where price1 is null or price2 is null"})
     List<Drug> queryForList();
 
 }
