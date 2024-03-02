@@ -201,18 +201,33 @@
         });
     }
 
-    function runPython(id, keyword){
+    function runPython(id, keyword) {
+        // 在请求开始时显示加载提示
+        var loadingIndex = layer.load(2, {time: 10 * 1000}); // 10秒超时时间
+
         $.ajax({
-            url : '/crawlingData?id='+id+'&keyword='+keyword,
-            type : 'get',
-            success : function(result) {
-                layer.msg("爬取成功", {icon: 1, time: 2000});
-                refreshTable();
-            },error : function(jqXHR, textStatus, errorThrown) {
-                layer.alert("出现网络故障,请稍后再试!",{icon:7,time:15000});
+            url: '/crawlingData?id=' + id + '&keyword=' + keyword,
+            type: 'get',
+            success: function (result) {
+                // 请求成功时隐藏加载提示
+                layer.close(loadingIndex);
+
+                // 显示爬取成功消息
+                layer.msg("爬取成功", {icon: 1, time: 5000});
+
+                // 刷新整个页面
+                location.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                // 请求失败时隐藏加载提示
+                layer.close(loadingIndex);
+
+                // 显示网络故障提示
+                layer.alert("出现网络故障，请稍后再试!", {icon: 7, time: 15000});
             }
         });
     }
+
     function del(id, name) {
         layer.confirm('确认删除吗？', {
             icon: 3, // 图标（0-7），可以根据需求修改
