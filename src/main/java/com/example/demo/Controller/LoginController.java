@@ -197,7 +197,7 @@ public class LoginController {
         json.put("code", 400);
         try {
             String id = jsonObject.getString("id");
-            String newPassword = jsonObject.getString("newPassword");
+            String newPassword = jsonObject.getString("password");
 //            String verifyCode = jsonObject.getString("verifyCode");
 //            String cachedValue = CacheUtil.get("CODE_" + username).toString();
 //            if (!StringUtils.equals(verifyCode, cachedValue)) {
@@ -208,6 +208,7 @@ public class LoginController {
 //            }
 
             User user = new User();
+             newPassword = MD5Utils.code(newPassword);
             user.setPassword(newPassword);
             user.setId(id);
             userService.resetPassword(user);
@@ -225,7 +226,7 @@ public class LoginController {
     }
 
     public static void main(String[] args) {
-        CacheUtil.put("errorCount", "1", 1);
-        System.out.println(CacheUtil.get("errorCount"));
+        String code = MD5Utils.code("123456");
+        System.out.println(code);
     }
 }

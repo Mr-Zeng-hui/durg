@@ -16,17 +16,17 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.print("请求到达Controller前\t");
-        Object token = request.getAttribute("token");
-
-        if (token == null){
-            response.sendRedirect("/admin");
-            return false;
-        }
-        User user = (User)CacheUtil.get(token.toString());
-        if (StringUtils.isBlank(user.getUserName())){
-            response.sendRedirect("/admin");
-            return false;
-        }
+//        Object token = request.getAttribute("token");
+//
+//        if (token == null){
+//            response.sendRedirect("/admin");
+//            return false;
+//        }
+//        User user = (User)CacheUtil.get(token.toString());
+//        if (StringUtils.isBlank(user.getUserName())){
+//            response.sendRedirect("/admin");
+//            return false;
+//        }
 //        if (request.getSession().getAttribute("user") == null){
 //            response.sendRedirect("/admin");
 //            return false;
