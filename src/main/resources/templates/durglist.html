@@ -192,6 +192,8 @@
             url : '/crawlingAllData',
             type : 'get',
             success : function(result) {
+                layer.msg("爬取全部成功", {icon: 1, time: 2000});
+
                 refreshTable();
             },error : function(jqXHR, textStatus, errorThrown) {
                 layer.alert("出现网络故障,请稍后再试!",{icon:7,time:15000});
@@ -204,6 +206,7 @@
             url : '/crawlingData?id='+id+'&keyword='+keyword,
             type : 'get',
             success : function(result) {
+                layer.msg("爬取成功", {icon: 1, time: 2000});
                 refreshTable();
             },error : function(jqXHR, textStatus, errorThrown) {
                 layer.alert("出现网络故障,请稍后再试!",{icon:7,time:15000});
@@ -221,6 +224,7 @@
                 url: '/delDurg?id=' + id+"&name="+name,
                 type: 'get',
                 success: function (result) {
+                    layer.msg("删除成功", {icon: 1, time: 2000});
                     refreshTable();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {

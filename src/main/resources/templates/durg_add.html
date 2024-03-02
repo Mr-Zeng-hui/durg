@@ -11,7 +11,7 @@
 <body>
 
 <div class="layui-container" style="margin-top: 20px;">
-    <form class="layui-form" id="addForm">
+    <form class="layui-form" onsubmit="return false;" id="addForm">
         <div class="layui-form-item">
             <label class="layui-form-label">药品名称</label>
             <div class="layui-input-block">
@@ -40,6 +40,7 @@
                 url : '/durgDataAdd?name='+dname,
                 type : 'get',
                 success : function(result) {
+                    layer.msg("添加成功", {icon: 1, time: 2000});
                 },error : function(jqXHR, textStatus, errorThrown) {
                     layer.alert("出现网络故障,请稍后再试!",{icon:7,time:15000});
                 }
