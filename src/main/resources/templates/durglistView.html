@@ -71,7 +71,7 @@
                             }
                         }},
 
-                    {field: 'price1', title: '百度健康价格', width: 150},
+                    {field: 'price1', title: '百度健康价格', width: 150, sort:true},
                     {field: 'img2', title: '阿里大药房药品图片', width: 200, templet: function(d){
                             if (d.img2) {
                                 return '<img src="'+ d.img2 +'" class="layui-table-img" onclick="enlargeImage(\'' + d.img2 + '\')"/>';
@@ -80,7 +80,7 @@
                             }
                         }},
 
-                    {field: 'price2', title: '阿里大药房价格', width: 150},
+                    {field: 'price2', title: '阿里大药房价格', width: 150, sort:true},
                     {field: 'instructions', title: '说明书'},
                     {field:'OPER', title: '操作',fixed:'right',align:'center',width: 150, templet : function(row){
                             var temp="";

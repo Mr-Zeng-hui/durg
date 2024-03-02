@@ -91,7 +91,7 @@
                             }
                         }},
 
-                    {field: 'price1', title: '百度健康价格', width: 150},
+                    {field: 'price1', title: '百度健康价格', width: 150, sort:true},
                     {field: 'img2', title: '阿里大药房药品图片', width: 200, sort:true, templet: function(d){
                             if (d.img2) {
                                 return '<img src="'+ d.img2 +'" class="layui-table-img" onclick="enlargeImage(\'' + d.img2 + '\')"/>';
@@ -223,7 +223,10 @@
                 layer.msg("爬取成功", {icon: 1, time: 5000});
 
                 // 刷新整个页面
-                location.reload();
+                //location.reload();
+                refreshTable();
+
+
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 // 请求失败时关闭加载中弹窗
