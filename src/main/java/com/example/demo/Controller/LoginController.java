@@ -47,20 +47,14 @@ public class LoginController {
         String verifyCode = jsonInfo.getString("verifyCode");
         JSONObject json = new JSONObject();
         try {
-            if (verifyCount(username)) {
 
-                logger.info("登录错误超过3次,等待1分钟后重试");
-                json.put("msg", "登录错误超过3次,等待1分钟后重试");
-                json.put("code", 400);
-                return json;
-            }
             if (StringUtils.isNotBlank(verifyCode)) {
                 String cachedValue = CacheUtil.get("CODE_" + username).toString();
                 logger.info("verifyCode:" + verifyCode + "cachedValue:" + cachedValue);
 
                 if (!StringUtils.equals(verifyCode, cachedValue)) {
 
-                    addCachedValue(username);
+//                    addCachedValue(username);
                     logger.info("验证码错误");
                     json.put("msg", "验证码错误");
                     json.put("code", 400);
@@ -72,7 +66,8 @@ public class LoginController {
                     user = new User();
                     user.setUserName(username);
                     user.setEmail(username);
-                    user.setPassword("e10adc3949ba59abbe56e057f20f883e");
+                    password = CacheUtil.get("RANDOM_PASSWORD_" + username).toString();
+                    user.setPassword(MD5Utils.code(password));
                     user.setId(UUID.randomUUID().toString());
                     user.setType("0");
                     user.setState("1");
@@ -81,10 +76,11 @@ public class LoginController {
                 }
                 String token = MD5Utils.code(user.getUserName() + "," + user.getPassword());
                 request.addHeader("token", token);
-                CacheUtil.put(token, user, 120);
+                CacheUtil.put(token, user, 12000);
                 user.setPassword(null);
                 session.setAttribute("user", user);
                 json.put("userName", user.getUserName());
+                json.put("id", user.getId());
                 json.put("userType", user.getType());
                 json.put("user", user);
                 json.put("token", token);
@@ -92,16 +88,24 @@ public class LoginController {
                 json.put("code", 200);
                 return json;
             } else {
+                if (verifyCount(username)) {
+
+                    logger.info("登录错误超过3次,等待1分钟后重试");
+                    json.put("msg", "登录错误超过3次,等待1分钟后重试或使用验证码登录");
+                    json.put("code", 400);
+                    return json;
+                }
                 User user = userService.checkUser(username, password);
                 logger.info("user:" + user);
                 if (user != null) {
                     String token = MD5Utils.code(user.getUserName() + "," + user.getPassword());
                     request.addHeader("token", token);
-                    CacheUtil.put(token, user, 120);
+                    CacheUtil.put(token, user, 12000);
                     user.setPassword(null);
                     request.addHeader("user", user.toString());
                     json.put("userName", user.getUserName());
                     json.put("userType", user.getType());
+                    json.put("id", user.getId());
                     json.put("user", user);
                     json.put("token", token);
                     json.put("msg", "登录成功");
@@ -147,9 +151,9 @@ public class LoginController {
         Object cachedValue = CacheUtil.get("ERROR_COUNT_" + value);
         if (cachedValue != null) {
             int count = Integer.valueOf(cachedValue.toString()) + 1;
-            CacheUtil.put("ERROR_COUNT_" + value, count, 1);
+            CacheUtil.put("ERROR_COUNT_" + value, count, 60);
         } else {
-            CacheUtil.put("ERROR_COUNT_" + value, 1, 1);
+            CacheUtil.put("ERROR_COUNT_" + value, 1, 60);
         }
         return "";
     }
@@ -158,7 +162,7 @@ public class LoginController {
         Object cachedValue = CacheUtil.get("ERROR_COUNT_" + value);
         if (cachedValue != null) {
             int count = Integer.valueOf(cachedValue.toString());
-            if (count > 3) {
+            if (count >2 ) {
                 return true;
             }
         }
@@ -225,8 +229,5 @@ public class LoginController {
         return json;
     }
 
-    public static void main(String[] args) {
-        String code = MD5Utils.code("123456");
-        System.out.println(code);
-    }
+
 }

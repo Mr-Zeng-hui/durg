@@ -31,7 +31,7 @@ public class CacheUtil {
     static {
         // 注册一个定时线程任务，服务启动1秒之后，每隔500毫秒执行一次
         // 定时清理过期缓存
-        executorService.scheduleAtFixedRate(CacheUtil::clearCache, 1000, 500, TimeUnit.MINUTES);
+        executorService.scheduleWithFixedDelay(CacheUtil::clearCache, 1000, 500, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -78,10 +78,13 @@ public class CacheUtil {
      * 清理过期的缓存数据
      */
     private static void clearCache() {
-        if (CACHE_MAP.size() <= 0) {
+        if (CACHE_MAP.isEmpty()) {
             return;
         }
-        // 判断是否过期 过期就从缓存Map删除这个元素
-        CACHE_MAP.entrySet().removeIf(entry -> entry.getValue().getExpireTime() != null && entry.getValue().getExpireTime() > System.currentTimeMillis());
-    }
+// 判断是否过期，过期就从缓存Map删除这个元素
+        CACHE_MAP.entrySet().removeIf(entry -> {
+            Long expireTime = entry.getValue().getExpireTime();
+            return expireTime != null && expireTime < System.currentTimeMillis();
+        });
+}
 }

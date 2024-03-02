@@ -22,17 +22,20 @@
 	<div class="layui-user-icon larry-login">
 		<input type="text" placeholder="邮箱账号" id="email_acc" name="email_acc" class="login_txtbx"/>
 	</div>
-	<div class="layui-pwd-icon larry-login">
+	<div class="layui-pwd-icon larry-login" id="passType">
 		<input type="password" id="email_pass" name="email_pass" placeholder="密码" class="login_txtbx"/>
 	</div>
-	<div class="layui-val-icon larry-login">
+	<div class="layui-val-icon larry-login" id="codeType" >
 		<div class="layui-code-box">
 			<input type="text" id="code" name="code" placeholder="验证码" maxlength="8" class="login_txtbx">
-			<input type="button" name="verifyCode" class="layui-btn layui-bg-orange verifyImg" value="获取验证码"  id="verifyCode" onclick="sendSms()">
+			<input type="button" name="verifyCode"  class="layui-btn layui-bg-orange verifyImg" value="获取验证码"  id="verifyCode" onclick="sendSms()">
 		</div>
 	</div>
 	<div class="layui-submit larry-login" style="margin-top: 5%">
 		<input type="button" value="登陆" class="submit_btn" onclick="submit()"/>
+	</div>
+	<div class="layui-submit larry-login" style="margin-top: 5%">
+		<input type="button" id="changeModel" value="密码登录" class="submit_btn" onclick="changeModel()"/>
 	</div>
 	<!--<div class="layui-submit larry-login" style="margin-top: 5%">
 		<input type="button" value="免费注册" class="layui-btn-xs" style="float: right;"/>
@@ -49,6 +52,7 @@
 			color: "#E6E6E6",
 			backgroundImage: "static/img/bg.jpg"
 		});
+		$("#passType").hide();
 	});
 
 	var flag = true;
@@ -61,7 +65,7 @@
 		}
 		$.ajax({
 			url:'/email/send',
-			data:JSON.stringify({"email_acc":email}),
+			data:JSON.stringify({"email_acc":email,"type":"1"}),
 			type: 'POST',
 			dataType:'json',
 			contentType: 'application/json',
@@ -78,6 +82,22 @@
 				}
 			}
 		});
+
+	}
+	changeModel = function(){
+		if ($("#changeModel").val()=="密码登录"){
+			$("#passType").show();
+			$("#codeType").hide();
+			$("#code").val("");
+			$("#email_pass").val("");
+			$("#changeModel").val("验证码登录")
+		}else if ($("#changeModel").val()=="验证码登录"){
+			$("#passType").hide();
+			$("#codeType").show();
+			$("#code").val("");
+			$("#email_pass").val("");
+			$("#changeModel").val("密码登录")
+		}
 
 	}
 
@@ -111,6 +131,7 @@
 					localStorage.setItem("durg_token", result.token);
 					localStorage.setItem("durg_userName", result.userName);
 					localStorage.setItem("durg_userType", result.userType);
+					localStorage.setItem("durg_id", result.id);
 					location.href="/index";
 				}else{
 					layer.msg(result.msg, {icon: 2,time: 2000});

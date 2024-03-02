@@ -24,7 +24,7 @@ public interface UserMapper {
     User queryByUsernameAndPassword( String username,  String password);
 
 
-    @Select("SELECT * FROM durg_user WHERE email=#{emailAccount} and state ='1' ")
+    @Select("SELECT * FROM durg_user WHERE email=#{emailAccount}")
     User checkUserEmail( String emailAccount);
 
 

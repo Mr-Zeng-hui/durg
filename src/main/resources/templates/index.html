@@ -12,9 +12,15 @@
   <div class="layui-header">
     <div class="layui-logo">药品管理系统</div>
     <ul class="layui-nav layui-layout-right">
-      <li class="layui-nav-item">欢迎您，<span id="username">管理员</span></li>
+      <li class="layui-nav-item">欢迎您，<span id="username">管理员</span>
+
+        <dl class="layui-nav-child"> <!-- 下拉菜单内容 -->
+          <dd><a href="javascript:;" id="durg_id"   onclick="reset()">修改密码</a></dd>
+          <!-- 这里可以添加更多的选项，比如重置密码、安全设置等 -->
+        </dl> </li>
+
       <li class="layui-nav-item">
-        <a  href="javascript:;" onclick="logout()">登出</a>
+        <a href="javascript:;" onclick="logout()">登出</a>
       </li>
     </ul>
   </div>
@@ -66,12 +72,17 @@
 </div>
 <script type="text/javascript" src="layui/layui.js"></script>
 <script>
+  var durg_id
   layui.use(['element','jquery','layer'], function(){
     var element = layui.element;
     var $ = layui.$ ,layer = layui.layer;
+
     $(function(){
       if (localStorage.getItem("durg_userName")){
         $("#username").html(localStorage.getItem("durg_userName"));
+      }
+      if (localStorage.getItem("durg_id")){
+        durg_id=localStorage.getItem("durg_id");
       }
       if('1' != localStorage.getItem("durg_userType")){
           $(".admin_flag").hide();
@@ -111,13 +122,36 @@
     });
 
   });
-
+  function reset(){
+    layer.prompt({formType:0,title:"请输入新密码...",value:''},
+            function(value, index){
+              /*layer.alert(value);
+              layer.alert(id);*/
+              $.ajax({
+                url:'/admin/reset',
+                data:JSON.stringify({id:durg_id,password:value}),
+                type: 'POST',
+                dataType:'json',
+                contentType: 'application/json',
+                success:function(result){
+                  if (result.code == 200){
+                    debugger;
+                    layer.msg(result.msg, {icon: 1,time: 2000});
+                  }else{
+                    layer.msg(result.msg, {icon: 2,time: 2000});
+                  }
+                }
+              });
+              layer.close(index);
+            });
+  }
 
   logout = function () {
     localStorage.removeItem("durg_user");
     localStorage.removeItem("durg_token");
     localStorage.removeItem("durg_userName");
     localStorage.removeItem("durg_userType");
+    localStorage.removeItem("durg_id");
     location.href="/login";
   }
 
