@@ -97,6 +97,7 @@
                     debugger;
                     if (result.code == 200) {
                         layer.msg(result.msg, {icon: 1, time: 2000});
+                        layer.closeAll();
                     } else {
                         layer.msg(result.msg, {icon: 2, time: 2000});
                     }

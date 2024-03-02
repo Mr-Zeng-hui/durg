@@ -45,11 +45,23 @@
             elem: '#list',
             cols: [
                 [ //标题栏
-                    {field: 'id', title: 'ID', width: 350},
-                    {field: 'durgname', title: '药品名称', width: 250},
-                    {field: 'type', title: '操作描述'},
-                    {field: 'time', title: '操作时间', width: 250},
-                    {field: 'username', title: '操作人', width: 250}
+                    {field: 'id', title: 'ID', width: 300},
+                    {field: 'durgname', title: '药品名称'},
+                    {field: 'type', title: '操作描述', width: 200, templet: function(d){
+                            if (d.type == 'delDurg') {
+                                return '删除药品';
+                            } else if(d.type == 'curlDurgData'){
+                                return '爬取药品数据';
+                            }else if(d.type == 'addDurg'){
+                                return '添加药品';
+                            }else if(d.type == 'lookDurg'){
+                                return '查看说明书';
+                            }else{
+                                return '';
+                            }
+                        }},
+                    {field: 'time', title: '操作时间', width: 200},
+                    {field: 'username', title: '操作人', width: 200}
                 ]
             ],
             url: '/logData',  // 后端接口地址
