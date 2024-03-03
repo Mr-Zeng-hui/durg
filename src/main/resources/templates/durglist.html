@@ -95,7 +95,7 @@
                                 return '';
                             }
                         }},
-                    {field: 'price1', title: '百度健康价格', width: 150, sort:true, templet: function(d){
+                    {field: 'price1', title: '百度健康价格', width: 180, sort:true, templet: function(d){
                             if (d.price1 && d.price1 !='null') {
                                 return d.price1;
                             } else {
@@ -109,7 +109,7 @@
                                 return '';
                             }
                         }},
-                    {field: 'price2', title: '阿里大药房价格', width: 150, sort:true, templet: function(d){
+                    {field: 'price2', title: '阿里大药房价格', width: 180, sort:true, templet: function(d){
                             if (d.price2 && d.price2 !='null') {
                                 return d.price2;
                             } else {
@@ -208,6 +208,10 @@
         // 重新设置表格的 URL
         layui.table.reload('list', {
             url: '/durgData?bak=' +$("#bak").val()+"&userid="+localStorage.getItem('durg_id'),
+
+            page: {
+                curr: 1 // 设置起始页为第一页
+            }
         });
     }
 
