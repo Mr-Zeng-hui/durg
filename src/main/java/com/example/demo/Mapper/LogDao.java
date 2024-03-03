@@ -15,11 +15,12 @@ public interface LogDao {
 
     @Select({
             "<script>",
-            "SELECT * FROM log",
+            "SELECT t1.id,t1.durgid,t1.durgname,t1.userid,t1.type,t1.time,t2.userName as username FROM log t1",
+            " join durg_user t2 on t2.id = t1.userid ",
             "<if test='bak != null and bak != \"\"'>",
-            "WHERE durgname LIKE '%' || #{bak} || '%'",
+            "WHERE t1.durgname LIKE '%' || #{bak} || '%'",
             "</if>",
-            " order by time desc LIMIT #{pageSize} OFFSET #{offset}",
+            " order by t1.time desc LIMIT #{pageSize} OFFSET #{offset}",
             "</script>"
     })
     List<Log> queryForPage(@Param("pageSize") int pageSize, @Param("offset") int offset, @Param("bak") String bak);

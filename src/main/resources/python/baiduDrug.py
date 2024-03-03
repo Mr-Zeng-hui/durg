@@ -112,7 +112,14 @@ def get_drug_info(keyword, filename):
             product_price = item.select_one('.c-price').text.strip()
             product_image_url = 'https:'+item.select_one('.photo img')['data-ks-lazyload']
 
-            if keyword in product_name:
+
+            strong_tag = soup.find('strong')
+
+            if strong_tag and '没找到符合条件的商品,换个条件或关键词试试吧。' in strong_tag.get_text():
+
+                res_json['price2'] = '尚未找到对应的药品'
+                res_json['img2'] = ''
+            else:
                 # 打印商品信息
                 print(f"商品名称: {product_name}")
                 print(f"商品价格: {product_price}")
@@ -120,9 +127,6 @@ def get_drug_info(keyword, filename):
 
                 res_json['price2'] = product_price
                 res_json['img2'] = product_image_url
-            else:
-                res_json['price2'] = '尚未找到对应的药品'
-                res_json['img2'] = ''
 
         else:
             print("未找到HTML内容。")
