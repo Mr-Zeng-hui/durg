@@ -90,8 +90,8 @@ public class LoginController {
             } else {
                 if (verifyCount(username)) {
 
-                    logger.info("登录错误超过3次,等待1分钟后重试");
-                    json.put("msg", "登录错误超过3次,等待1分钟后重试或使用验证码登录");
+                    logger.info("登录错误超过3次,使用验证码登录");
+                    json.put("msg", "登录错误超过3次,使用验证码登录");
                     json.put("code", 400);
                     return json;
                 }
