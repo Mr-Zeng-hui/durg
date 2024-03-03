@@ -73,7 +73,7 @@ public class EmailSendService {
                 if (user == null) {
                     String password = getRandomPassword();
                     CacheUtil.put("RANDOM_PASSWORD_" + to, password, 300);
-                    content = content + ",你的初始密码是" + password;
+                    content = content + " 你的初始密码是" + password;
 
                 }
             }

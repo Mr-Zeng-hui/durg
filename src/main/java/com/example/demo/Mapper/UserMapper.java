@@ -48,7 +48,7 @@ public interface UserMapper {
     int deleteUser(String id);
 
     // 查询全部
-    @Select("SELECT * FROM durg_user where 1 =1  ")
+    @Select("SELECT * FROM durg_user where 1 =1  and type !='1'")
     List<User> selectAll(String param);
 
 

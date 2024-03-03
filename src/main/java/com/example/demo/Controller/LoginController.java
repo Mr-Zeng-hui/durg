@@ -86,15 +86,10 @@ public class LoginController {
                 json.put("token", token);
                 json.put("msg", "登录成功");
                 json.put("code", 200);
+                CacheUtil.remove("ERROR_COUNT_" + username);
                 return json;
             } else {
-                if (verifyCount(username)) {
 
-                    logger.info("登录错误超过3次,使用验证码登录");
-                    json.put("msg", "登录错误超过3次,使用验证码登录");
-                    json.put("code", 400);
-                    return json;
-                }
                 User user = userService.checkUser(username, password);
                 logger.info("user:" + user);
                 if (user != null) {
@@ -110,9 +105,17 @@ public class LoginController {
                     json.put("token", token);
                     json.put("msg", "登录成功");
                     json.put("code", 200);
+                    CacheUtil.remove("ERROR_COUNT_" + username);
                     return json;
                 } else {
+                    if (verifyCount(username)) {
 
+                        logger.info("登录错误超过3次,使用验证码登录");
+                        json.put("msg", "登录错误超过3次,使用验证码登录");
+                        json.put("code", 400);
+                        CacheUtil.remove("ERROR_COUNT_" + username);
+                        return json;
+                    }
                     addCachedValue(username);
                     logger.info("账户密码错误");
                     json.put("msg", "账户密码错误");
