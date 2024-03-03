@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -36,7 +35,7 @@ public class InitDrugService {
     }
 
     private static void insertData(Connection connection, JsonNode jsonNode) throws Exception {
-        String insertDataSQL = "INSERT INTO drug_set (ID, NAME, TYPE) VALUES (?, ?, ?);";
+        String insertDataSQL = "INSERT INTO durg_set (ID, NAME, TYPE) VALUES (?, ?, ?);";
         System.out.println(jsonNode.toString());
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertDataSQL)) {

@@ -37,7 +37,7 @@
             dname = json.dname
 
             $.ajax({
-                url : '/durgDataAdd?name='+dname,
+                url : '/durgDataAdd?name='+dname+"&userid="+localStorage.getItem('durg_id'),
                 type : 'get',
                 success : function(result) {
                     layer.msg("添加成功", {icon: 1, time: 2000});

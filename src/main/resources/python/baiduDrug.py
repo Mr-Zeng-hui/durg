@@ -22,57 +22,68 @@ def get_drug_info(keyword, filename):
         response = requests.get(url.format(keyword))
         json_data = response.json()
         status = json_data['status']
-
+        price = ''
+        commonName=''
+        indication=''
+        headerImages=''
+        resultSentence=''
+        result_sentence=''
         # 检查请求状态
         if status == 0:
             data = json_data['data']
-            drug = data['drugs'][0]
-            skuId = drug['skuId']
-            storeId = drug['pfStoreId']
-            # print("skuId->{}, storeId->{} .".format(skuId, storeId))
+            if len(data['drugs']) ==0 :
+                price = '尚未找到对应的药品'
 
-            # 发送请求获取药品详细信息
-            detail_response = requests.get(url2.format(skuId, storeId))
-            detail_json = detail_response.json()
-            detail_status = detail_json['status']
+            else:
+                data = json_data['data']
+                drug = data['drugs'][0]
+                skuId = drug['skuId']
+                storeId = drug['pfStoreId']
+                # print("skuId->{}, storeId->{} .".format(skuId, storeId))
 
-            # 检查请求状态
-            if detail_status == 0:
-                baseInfo = detail_json['data']['baseInfo']
-                commonName = baseInfo['commonName']
-                indication = baseInfo['indication']
-                headerImages = baseInfo['headerImages'][0]
-                drugAbstract = baseInfo['instructionManual']['drugAbstract']
+                # 发送请求获取药品详细信息
+                detail_response = requests.get(url2.format(skuId, storeId))
+                detail_json = detail_response.json()
+                detail_status = detail_json['status']
 
-                price = baseInfo['price']/100
-                # 创建一个空列表用于存储句子
-                sentences = []
+                # 检查请求状态
+                if detail_status == 0:
+                    baseInfo = detail_json['data']['baseInfo']
+                    commonName = baseInfo['commonName']
+                    indication = baseInfo['indication']
+                    headerImages = baseInfo['headerImages'][0]
+                    drugAbstract = baseInfo['instructionManual']['drugAbstract']
 
-                if drugAbstract is not None:
-                    # 遍历 JSON 数组
-                    for item in drugAbstract:
-                        # 将 "name" 和 "description" 合并为一个句子，并添加到列表中
-                        sentence = "{}: {}".format(item['name'], item['description'])
-                        sentences.append(sentence)
+                    price = baseInfo['price']/100
+                    # 创建一个空列表用于存储句子
+                    sentences = []
 
-                # 使用字符串的 join 方法将句子连接起来
-                result_sentence = "\n".join(sentences)
+                    if drugAbstract is not None:
+                        # 遍历 JSON 数组
+                        for item in drugAbstract:
+                            # 将 "name" 和 "description" 合并为一个句子，并添加到列表中
+                            sentence = "{}: {}".format(item['name'], item['description'])
+                            sentences.append(sentence)
 
-                # 打印药品信息
-                # print(commonName)
-                # print(indication)
-                # print(headerImages)
-                # print(result_sentence)
+                    # 使用字符串的 join 方法将句子连接起来
+                    result_sentence = "\n".join(sentences)
 
-                 # 创建一个字典用于存储信息
-                res_json = {
-                    "commonName": commonName,
-                    "price": price,
-                    "indication": indication,
-                    "headerImages": headerImages,
-                    "resultSentence": result_sentence
-                }
+                    # 打印药品信息
+                    # print(commonName)
+                    # print(indication)
+                    # print(headerImages)
+                    # print(result_sentence)
 
+             # 创建一个字典用于存储信息
+            res_json = {
+                "commonName": commonName,
+                "price": price,
+                "indication": indication,
+                "headerImages": headerImages,
+                "resultSentence": result_sentence
+            }
+
+            print(res_json)
 
         keyword = remove_brackets(keyword)
         keyword = quote(keyword, encoding='gbk')  # 使用 gbk 编码
@@ -101,14 +112,17 @@ def get_drug_info(keyword, filename):
             product_price = item.select_one('.c-price').text.strip()
             product_image_url = 'https:'+item.select_one('.photo img')['data-ks-lazyload']
 
+            if keyword in product_name:
+                # 打印商品信息
+                print(f"商品名称: {product_name}")
+                print(f"商品价格: {product_price}")
+                print(f"商品图片URL: {product_image_url}")
 
-            # 打印商品信息
-            print(f"商品名称: {product_name}")
-            print(f"商品价格: {product_price}")
-            print(f"商品图片URL: {product_image_url}")
-
-            res_json['price2'] = product_price
-            res_json['img2'] = product_image_url
+                res_json['price2'] = product_price
+                res_json['img2'] = product_image_url
+            else:
+                res_json['price2'] = '尚未找到对应的药品'
+                res_json['img2'] = ''
 
         else:
             print("未找到HTML内容。")
@@ -119,6 +133,7 @@ def get_drug_info(keyword, filename):
             json.dump(res_json, json_file, ensure_ascii=False, indent=4)
     except requests.exceptions.RequestException as e:
         print(f"请求失败: {e}")
+
 
 def remove_brackets(text):
     # 使用正则表达式匹配括号及其内部内容，并替换为空字符串

@@ -43,7 +43,6 @@
                     </div>
                     <button type="button" class="layui-btn" style="margin-left: 10px;" onclick="query()">搜索</button>
 
-
                     <!-- 添加按钮 -->
                     <button type="button" class="layui-btn layui-btn-danger" style="float: right;" onclick="crawlAll()">爬取全部</button>
 
@@ -82,35 +81,53 @@
                     {field: 'id', title: 'ID', width: 150, style: 'height: 100px; line-height: 100px;'},
                     {field: 'name', title: '药品名称', width: 150,},
                     // {field: 'bigname', title: '详细名称', width: 100},
-                    {field: 'bak', title: '主治症状', width: 180},
+                    {field: 'bak', title: '主治症状', width: 180, templet: function(d){
+                            if (d.bak&&d.bak !='null') {
+                                return d.bak;
+                            } else {
+                                return '';
+                            }
+                        }},
                     {field: 'img1', title: '百度健康药品图片', width: 200, templet: function(d){
-                            if (d.img1) {
+                            if (d.img1&&d.img1 !='null') {
                                 return '<img src="'+ d.img1 +'" class="layui-table-img" onclick="enlargeImage(\'' + d.img1 + '\')"/>';
                             } else {
                                 return '';
                             }
                         }},
-
-                    {field: 'price1', title: '百度健康价格', width: 150, sort:true},
+                    {field: 'price1', title: '百度健康价格', width: 150, sort:true, templet: function(d){
+                            if (d.price1 && d.price1 !='null') {
+                                return d.price1;
+                            } else {
+                                return '';
+                            }
+                        }},
                     {field: 'img2', title: '阿里大药房药品图片', width: 200, sort:true, templet: function(d){
-                            if (d.img2) {
+                            if (d.img2&& d.img2 !='null') {
                                 return '<img src="'+ d.img2 +'" class="layui-table-img" onclick="enlargeImage(\'' + d.img2 + '\')"/>';
                             } else {
                                 return '';
                             }
                         }},
-
-                    {field: 'price2', title: '阿里大药房价格', width: 150, sort:true},
-                    {field: 'instructions', title: '说明书'},
+                    {field: 'price2', title: '阿里大药房价格', width: 150, sort:true, templet: function(d){
+                            if (d.price2 && d.price2 !='null') {
+                                return d.price2;
+                            } else {
+                                return '';
+                            }
+                        }},
+                    {field: 'instructions', title: '说明书', templet: function(d){
+                            if (d.instructions && d.instructions !='null') {
+                                return d.instructions;
+                            } else {
+                                return '';
+                            }
+                        }},
                     {field:'OPER', title: '操作',fixed:'right',align:'center',width: 220, templet : function(row){
                             var temp="";
-
                             temp+= ' <span href="javascript:void(0)" class="layui-btn layui-btn-xs layui-btn-primary" onclick="look(\''+row.id+'\')">说明书</span> ';
-
                             temp+= ' <span href="javascript:void(0)" class="layui-btn layui-btn-xs layui-btn-warn" onclick="runPython(\''+row.id+'\', \''+row.name+'\')">爬取最新</span> ';
-
                             temp += '<span href="javascript:void(0)" class="layui-btn layui-btn-xs layui-btn-danger" onclick="del(\'' + row.id + '\', \''+row.name+'\')">删除</span>';
-
                             return temp;
                         }}
                 ]
@@ -147,25 +164,33 @@
 //         });
     });
 
-    function look(id){
+    function look(id) {
         // 在这里处理点击查看说明书的逻辑，弹出小窗口展示字段内容
         $.ajax({
-            url: '/getDurgById?id=' + id,
+            url: '/getDurgById?id=' + id + "&userid=" + localStorage.getItem('durg_id'),
             type: 'get',
             success: function (result) {
-                var textToShow = result;
-                if(textToShow == null){
-                    textToShow=""
-
+                var textToShow = result.data;
+                if (textToShow == null) {
+                    textToShow = "";
                 }
+
                 // 包装文本内容在 <pre> 标签中，保留文本格式
                 var formattedText = '<pre>' + textToShow + '</pre>';
-                layer.open({
+
+                // 弹出小窗口
+                var layerIndex = layer.open({
                     type: 1,
                     title: "说明书",
-                    content:formattedText,
-                    area: ['800px', '600px']
+                    content: formattedText,
+                    area: ['800px', '600px'],
+                    btn: ['关闭'], // 设置按钮
+                    yes: function (index, layero) {
+                        // 按钮点击关闭时调用
+                        layer.close(index); // 关闭当前 layer 对话框
+                    }
                 });
+
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 layer.alert('出现网络故障，请稍后再试！', { icon: 7, time: 15000 });
@@ -182,7 +207,7 @@
         console.log("刷新表格1")
         // 重新设置表格的 URL
         layui.table.reload('list', {
-            url: '/durgData?bak=' +$("#bak").val(),
+            url: '/durgData?bak=' +$("#bak").val()+"&userid="+localStorage.getItem('durg_id'),
         });
     }
 
@@ -196,7 +221,6 @@
             type : 'get',
             success : function(result) {
                 layer.msg("爬取全部成功", {icon: 1, time: 2000});
-
                 refreshTable();
             },error : function(jqXHR, textStatus, errorThrown) {
                 layer.alert("出现网络故障,请稍后再试!",{icon:7,time:15000});
@@ -213,14 +237,18 @@
         });
 
         $.ajax({
-            url: '/crawlingData?id=' + id + '&keyword=' + keyword,
+            url: '/crawlingData?id=' + id + '&keyword=' + keyword+"&userid="+localStorage.getItem('durg_id'),
             type: 'get',
             success: function (result) {
                 // 请求成功时关闭加载中弹窗
                 layer.close(loadingMsgIndex);
 
                 // 显示爬取成功消息
-                layer.msg("爬取成功", {icon: 1, time: 5000});
+                if(result.code = '200'){
+                    layer.msg("爬取成功", {icon: 1, time: 5000});
+                }else{
+                    layer.alert("出现网络故障，请稍后再试!", {icon: 7, time: 15000});
+                }
 
                 // 刷新整个页面
                 //location.reload();
@@ -247,11 +275,16 @@
         }, function () {
             // 用户点击确认按钮时执行的操作
             $.ajax({
-                url: '/delDurg?id=' + id+"&name="+name,
+                url: '/delDurg?id=' + id+"&name="+name+"&userid="+localStorage.getItem('durg_id'),
                 type: 'get',
                 success: function (result) {
-                    layer.msg("删除成功", {icon: 1, time: 2000});
-                    refreshTable();
+                    // 显示爬取成功消息
+                    if(result.code = '200'){
+                        layer.msg("删除成功", {icon: 1, time: 2000});
+                        refreshTable();
+                    }else{
+                        layer.alert("删除失败", {icon: 7, time: 15000});
+                    }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     layer.alert('出现网络故障，请稍后再试！', { icon: 7, time: 15000 });

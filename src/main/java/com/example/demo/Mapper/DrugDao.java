@@ -15,7 +15,7 @@ public interface DrugDao {
 
     @Select({
             "<script>",
-            "SELECT * FROM drug_set",
+            "SELECT * FROM durg_set",
             "<if test='bak != null and bak != \"\"'>",
             "WHERE bak LIKE '%' || #{bak} || '%'",
             " or name LIKE '%' || #{bak} || '%'",
@@ -28,7 +28,7 @@ public interface DrugDao {
     // 查询总记录数
     @Select({
             "<script>",
-            "SELECT COUNT(*) FROM drug_set",
+            "SELECT COUNT(*) FROM durg_set",
             "<if test='bak != null and bak != \"\"'>",
             "WHERE bak LIKE '%' || #{bak} || '%'",
             "</if>",
@@ -36,21 +36,19 @@ public interface DrugDao {
     })
     int queryTotalCount(@Param("bak") String bak);
 
-    @Insert({"INSERT INTO drug_set (id, name , type, time) VALUES (#{id}, #{name}, '1', #{time})"})
+    @Insert({"INSERT INTO durg_set (id, name , type, time) VALUES (#{id}, #{name}, '1', #{time})"})
     boolean insertDrugName(@Param("id") String id, @Param("name") String name,  @Param("time") String time);
 
-    @Delete({"Delete from  drug_set where id =  #{id}"})
+    @Delete({"Delete from  durg_set where id =  #{id}"})
     boolean delDrugName(@Param("id") String id);
 
-    @Update({"UPDATE drug_set SET bak=#{bak}, instructions=#{instructions}, time=#{time}, price1=#{price1}, price2=#{price2}, img1=#{img1}, img2=#{img2} WHERE id=#{id}"})
+    @Update({"UPDATE durg_set SET bak=#{bak}, instructions=#{instructions}, time=#{time}, price1=#{price1}, price2=#{price2}, img1=#{img1}, img2=#{img2} WHERE id=#{id}"})
     boolean updateDrug(@Param("id") String id, @Param("bak") String bak,  @Param("time") String time,  @Param("instructions") String instructions,  @Param("price1") String price1,  @Param("price2") String price2,  @Param("img1") String img1,  @Param("img2") String img2);
 
-
-    @Select({"select * from drug_set where id = #{id}"})
+    @Select({"select * from durg_set where id = #{id}"})
     Drug getDurgById(@Param("id") String id);
 
-
-    @Select({"SELECT * FROM drug_set where price1 is null or price2 is null"})
+    @Select({"SELECT * FROM durg_set where price1 is null or price2 is null"})
     List<Drug> queryForList();
 
 }

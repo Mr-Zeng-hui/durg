@@ -1,6 +1,7 @@
 package com.example.demo.Service;
 
 import com.example.demo.Model.Drug;
+import com.example.demo.Model.User;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,13 +13,13 @@ public interface IDrugSerivce {
 
     int queryTotalCount();
 
-    Boolean crawlingData(String id, String keyword);
+    Boolean crawlingData(String id, String keyword, User user);
 
-    boolean insertDrug(String name);
+    boolean insertDrug(String name, User user);
 
-    boolean delDrug(String id, String name);
+    boolean delDrug(String id, String name, User user);
 
-    Drug getDurgById(String id);
+    Drug getDurgById(String id, User user);
 
     Boolean crawlingAllData();
 

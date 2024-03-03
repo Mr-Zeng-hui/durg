@@ -1,10 +1,12 @@
 package com.example.demo.Service;
 
+import com.example.demo.Model.User;
+
 import java.util.Map;
 
 public interface ILogSerivce {
 
-    Map<String, Object> queryForPage(int pageSize, int offset, String bak);
+    Map<String, Object> queryForPage(int pageSize, int offset, String bak, User user);
 
     int queryTotalCount();
 

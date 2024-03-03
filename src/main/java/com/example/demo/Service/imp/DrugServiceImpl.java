@@ -6,6 +6,7 @@ import com.example.demo.Controller.DurgControlller;
 import com.example.demo.Mapper.DrugDao;
 import com.example.demo.Mapper.LogDao;
 import com.example.demo.Model.Drug;
+import com.example.demo.Model.User;
 import com.example.demo.Service.IDrugSerivce;
 import com.example.demo.Service.InitDrugService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -45,7 +46,7 @@ public class DrugServiceImpl implements IDrugSerivce {
         int offset = (pageNum - 1) * pageSize;
         List<Drug> drugList = drugDao.queryForPage(pageSize, offset, bak);
         int totalCount = drugDao.queryTotalCount(bak);
-        System.out.println(totalCount);
+        logger.info("页面查询到的总数："+totalCount);
         Map<String, Object> result = new HashMap<>();
         result.put("code", 0);
         result.put("msg", "");
@@ -60,37 +61,33 @@ public class DrugServiceImpl implements IDrugSerivce {
     }
 
     @Override
-    public Boolean crawlingData(String id, String keyword) {
+    public Boolean crawlingData(String id, String keyword, User user) {
         logger.info("爬取信息:"+keyword);
         try {
            String currentWorkingDir = System.getProperty("user.dir");
-
            String pythonScriptPath = Paths.get(currentWorkingDir, "baiduDrug.py").toString();
-
 //           // Python 脚本的路径
 //           String pythonScriptPath = "C://Users//hammer//IdeaProjects//durg//src//main//resources//python//baiduDrug.py";
            // 构造执行命令的字符串
            String filename = String.valueOf(UUID.fastUUID())+".json";
            String command = "python " + pythonScriptPath+" "+keyword+" "+filename;
+           logger.info(command);
            // 执行命令
            Process process = Runtime.getRuntime().exec(command);
-
            // 获取命令执行的输出流
            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
            String line;
            while ((line = reader.readLine()) != null) {
                System.out.println(line);
            }
-
            // 等待命令执行完成
            int exitCode = process.waitFor();
            // 输出命令执行的结果码
-           System.out.println("Exit Code: " + exitCode);
+            logger.info("Exit Code: " + exitCode);
            Thread.sleep(8000);
            //URL resource = InitDrugService.class.getClassLoader().getResource("python/"+filename);
            String absolutePath = Paths.get(currentWorkingDir, filename).toString();
-           //absolutePath = "C:\\Users\\hammer\\IdeaProjects\\durg\\f33227cf-a51e-4c99-aaca-a1feec5a390d.json";
-           System.out.println("Absolute Path: " + absolutePath);
+           logger.info("Absolute Path: " + absolutePath);
            File file = new File(absolutePath);
            ObjectMapper objectMapper = new ObjectMapper();
            JsonNode jsonNode = objectMapper.readTree(file);
@@ -103,20 +100,19 @@ public class DrugServiceImpl implements IDrugSerivce {
            String instructions = String.valueOf(jsonNode.get("resultSentence")).replaceAll("^\"|\"$", "");
            String currentDateTime = DateUtil.now();
            String time = DateUtil.format(DateUtil.date(), "yyyy-MM-dd HH:mm:ss");
-
            //还要插入日志
-           logDao.insertLog(String.valueOf(UUID.fastUUID()), id, keyword, "system", "system", time, "curlDurgData");
+            if(user !=null ){
+                logDao.insertLog(String.valueOf(UUID.fastUUID()), id, keyword, user.getId(), user.getUserName(), time, "curlDurgData");
+            }
            drugDao.updateDrug(id, bak, time, instructions, price1, price2, img1, img2);
-
             Path path = Paths.get(absolutePath);
             // 删除文件
             Files.delete(path);
-
-            System.out.println("文件删除成功");
+            logger.info("文件删除成功");
            return true;
        }catch (Exception e) {
-           System.out.println(e.getMessage());
-           return false;
+            logger.error(e.getMessage(),e);
+            return false;
        }
     }
 
@@ -134,41 +130,37 @@ public class DrugServiceImpl implements IDrugSerivce {
 //    }
 
     @Override
-    public boolean insertDrug(String name) {
+    public boolean insertDrug(String name, User user) {
 // 获取当前时间字符串，默认格式为 "yyyy-MM-dd HH:mm:ss"
         String currentDateTime = DateUtil.now();
-        System.out.println("Current Date and Time: " + currentDateTime);
-
+        logger.info("插入的Current Date and Time: " + currentDateTime);
         // 可以指定自定义的日期格式
         String customFormat = DateUtil.format(DateUtil.date(), "yyyy-MM-dd HH:mm:ss");
-
         String uuid = String.valueOf(UUID.fastUUID());
         drugDao.insertDrugName(uuid, name, customFormat);
-
         //还要插入日志
-        logDao.insertLog(String.valueOf(UUID.fastUUID()), uuid, name, "system", "system", customFormat, "addDurg");
+        logDao.insertLog(String.valueOf(UUID.fastUUID()), uuid, name, user.getId(), user.getUserName(), customFormat, "addDurg");
         return true;
     }
 
     @Override
-    public boolean delDrug(String id, String name) {
+    public boolean delDrug(String id, String name, User user) {
         String currentDateTime = DateUtil.now();
         // 可以指定自定义的日期格式
         String customFormat = DateUtil.format(DateUtil.date(), "yyyy-MM-dd HH:mm:ss");
         //还要插入日志
-        logDao.insertLog(String.valueOf(UUID.fastUUID()), id, name, "system", "system", customFormat, "delDurg");
-
+        logDao.insertLog(String.valueOf(UUID.fastUUID()), id, name, user.getId(), user.getUserName(), customFormat, "delDurg");
         return drugDao.delDrugName(id);
     }
 
     @Override
-    public Drug getDurgById(String id) {
+    public Drug getDurgById(String id, User user) {
         Drug drug = drugDao.getDurgById(id);
         String currentDateTime = DateUtil.now();
         // 可以指定自定义的日期格式
         String customFormat = DateUtil.format(DateUtil.date(), "yyyy-MM-dd HH:mm:ss");
         //还要插入日志
-        logDao.insertLog(String.valueOf(UUID.fastUUID()), id, drug.getName(), "system", "system", customFormat, "lookDurg");
+        logDao.insertLog(String.valueOf(UUID.fastUUID()), id, drug.getName(), user.getId(), user.getUserName(), customFormat, "lookDurg");
         return drug;
     }
 
@@ -178,7 +170,7 @@ public class DrugServiceImpl implements IDrugSerivce {
         for(Drug drug: drugs){
             String id = drug.getId();
             String name = drug.getName();
-            crawlingData(id, name);
+            crawlingData(id, name, null);
         }
         return true;
     }

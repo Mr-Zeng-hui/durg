@@ -46,9 +46,9 @@
             elem: '#list3',
             cols: [
                 [ //标题栏
-                    {field: 'id', title: 'ID', width: 400},
+                    {field: 'id', title: 'ID', width: 350},
                     {field: 'durgname', title: '药品名称'},
-                    {field: 'type', title: '操作描述', width: 300, templet: function(d){
+                    {field: 'type', title: '操作描述', width: 250, templet: function(d){
                             if (d.type == 'delDurg') {
                                 return '删除药品';
                             } else if(d.type == 'curlDurgData'){
@@ -61,11 +61,18 @@
                                 return '';
                             }
                         }},
-                    {field: 'time', title: '操作时间', width: 300}
-                    // {field: 'username', title: '操作人', width: 200}
+                    {field: 'time', title: '操作时间', width: 250},
+                    {field: '', title: '操作人', width: 250, templet: function(d){
+                            if (d.userid == '2') {
+                                return '系统管理员';
+
+                            }else{
+                                return d.username;
+                            }
+                        }}
                 ]
             ],
-            url: '/logData',  // 后端接口地址
+            url: '/logData'+"?userid="+localStorage.getItem('durg_id'),  // 后端接口地址
             page: true, // 是否显示分页
             limit: 20,
             limits: [20, 100, 500],
@@ -80,7 +87,7 @@
 
         // 重新设置表格的 URL
         layui.table.reload('list3', {
-            url: '/logData?bak=' +$("#bak").val(),
+            url: '/logData?bak=' +$("#bak").val()+"&userid="+localStorage.getItem('durg_id'),
         });
     }
 
